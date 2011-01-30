@@ -116,19 +116,20 @@ void init_LCD()
   data_out(0x00);
   data_out(0x00);
   for(i = 0; i<9600; i++){
-    comm_out(0x42);
+    comm_out(0x42); //Write Command
     data_out(0xA0);
   }
   for(i = 0; i<9600 ; i++){
-    comm_out(0x42);
+    comm_out(0x42); //Write Command
     data_out(0x00);
   }
-  comm_out(0x46);
+  comm_out(0x46); //Set cursor to first screen block
   data_out(0x00);
   data_out(0x00);
-  comm_out(0x5D);
+  comm_out(0x5D); //Sets cursor form
   data_out(0x04);
   data_out(0x86);
-  comm_out(0x59);
+  comm_out(0x59); //Display on
+  comm_out(0x4C); //Cursor Direction right
   delay(5);
 }
