@@ -9,6 +9,13 @@
 #define F_CPU 32000000UL
 #include <util\delay.h>
 #include "lcd-driver.c"
+#include "i2c-driver.c"
+#include "button-driver.c"
+
+#define button0_bm (1<<0)
+#define button1_bm (1<<1)
+#define button2_bm (1<<2)
+#define button3_bm (1<<3)
 
 #define VERSION "0.0.1"
 
