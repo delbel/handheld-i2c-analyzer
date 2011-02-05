@@ -9,9 +9,11 @@
 #include <stddef.h>
 #include <avr\io.h>
 #include <avr\interrupt.h>
-#define BUTTON_PORT_DIR PORTB.DIR
-#define BUTTON_PORT_OUT PORTB.OUT
-#define BUTTON_PORT_IN  PORTB.IN
+#define BUTTON_PORT_DIR 	PORTB.DIR
+#define BUTTON_PORT_OUT 	PORTB.OUT
+#define BUTTON_PORT_IN  	PORTB.IN
+#define CANCEL_BUTTON 		(1<<2)
+#define CONTROL_PIN 		PIN2_CTRL 
 
 #define VERSION "0.0.1"
 
@@ -43,6 +45,7 @@ ISR(TCC1_OVF_vect)
 
 void init_buttons()
 {
+  CONTROL_PIN = 0x02;
   //setup timer/counter interrupt for button debouncing
   TCC1.CTRLA = 0x07; //use clk/1024
   //top set to 32
@@ -50,7 +53,7 @@ void init_buttons()
   TCC1.PERL = 0x20;
   
   //setup external interrupt for cancel button
-  
+  PORTB.INTCTRL = 0x03; //high level interrupt
 }
 
 void enable_normal_buttons()
@@ -67,10 +70,10 @@ void disable_normal_buttons()
 
 void enable_cancel_interrupt()
 {
-
+  PORTB.INT0MAsK = CANCEL_BUTTON;
 }
 
 void disable_cancel_interrupt()
 {
-
+  PORTB.INT0MASK = 0x00;
 }
