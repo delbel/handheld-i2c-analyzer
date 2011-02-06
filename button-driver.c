@@ -13,7 +13,7 @@
 #define BUTTON_PORT_OUT 	PORTB.OUT
 #define BUTTON_PORT_IN  	PORTB.IN
 #define CANCEL_BUTTON 		(1<<2)
-#define CONTROL_PIN 		PIN2_CTRL 
+#define CANCEL_CONTROL_PIN 		PORTB.PIN2CTRL 
 
 #define VERSION "0.0.1"
 
@@ -36,16 +36,21 @@ ISR(TCC1_OVF_vect)
   int i;
   for(i=0;i<4;i++)
   {
-    if(chk_buttons(0))
+    if(chk_buttons(i))
 	{
 	  pressed_buttons = (pressed_buttons | (1<<i));
 	}
   }
 }
 
+ISR(PORTB_INT0_vect)
+{
+  //place value to be checked in register
+}
+
 void init_buttons()
 {
-  CONTROL_PIN = 0x02;
+  CANCEL_CONTROL_PIN = 0x02;
   //setup timer/counter interrupt for button debouncing
   TCC1.CTRLA = 0x07; //use clk/1024
   //top set to 32
@@ -70,10 +75,10 @@ void disable_normal_buttons()
 
 void enable_cancel_interrupt()
 {
-  PORTB.INT0MAsK = CANCEL_BUTTON;
+  PORTB.INT0MASK = CANCEL_BUTTON; //enable interrupt
 }
 
 void disable_cancel_interrupt()
 {
-  PORTB.INT0MASK = 0x00;
+  PORTB.INT0MASK = 0x00; //disable interrupt
 }

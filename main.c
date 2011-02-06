@@ -33,6 +33,12 @@ int main(void)
   CONTROL_DIR = 0xFF;
   DATA_DIR = 0xFF;
   asm("nop");
+  
+  PMIC.CTRL = 0x05; //low and high interrupts enabled
+  sei();
+  init_buttons();
+  enable_normal_buttons();
+  
   reset_LCD();
   init_LCD();
   
