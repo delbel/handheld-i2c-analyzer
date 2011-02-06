@@ -6,9 +6,9 @@
 */
 #include <stdio.h>
 #include <stddef.h>
-#include <avr\io.h>
+#include <avr/io.h>
 #define F_CPU 32000000UL
-#include <util\delay.h>
+#include <util/delay.h>
 #define SDA 		(1<<0)
 #define SCL 		(1<<1)
 #define TWI_PORT 	PORTC.PORT

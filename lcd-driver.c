@@ -1,4 +1,4 @@
-#include <avr\io.h>
+#include <avr/io.h>
 
 #define A0 		(1<<0)
 #define WR		(1<<1)

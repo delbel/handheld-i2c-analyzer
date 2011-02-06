@@ -5,9 +5,9 @@
 */
 #include <stdio.h>
 #include <stddef.h>
-#include <avr\io.h>
+#include <avr/io.h>
 #define F_CPU 32000000UL
-#include <util\delay.h>
+#include <util/delay.h>
 #include "lcd-driver.c"
 #include "i2c-driver.c"
 #include "button-driver.c"
