@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <string.h>
 
 #define A0 		(1<<0)
 #define WR		(1<<1)
@@ -111,7 +112,7 @@ void init_LCD()
   comm_out(0x5B); //OVLAY
   data_out(0x01); 
   comm_out(0x58); //Display off
-  data_out(0x56); 
+  data_out(0x54); //Cursor is off
   comm_out(0x46); //Set cursor to first screen block
   data_out(0x00);
   data_out(0x00);
@@ -132,4 +133,40 @@ void init_LCD()
   comm_out(0x59); //Display on
   comm_out(0x4C); //Cursor Direction right
   delay(5);
+}
+
+void write_string(uint8_t line_number, uint8_t position, char* string){
+  uint16_t address = line_number * 40 + position;
+  comm_out(0x46);
+  data_out((uint8_t)(address & 0xFF));
+  data_out((uint8_t)(address >> 8));
+  comm_out(0x42);
+  int i;
+  for(i = 0; i < strlen(string); i++){
+    data_out(string[i]);
+  }
+}
+
+void invert_string(uint8_t line_number, uint8_t position, uint8_t length, uint8_t invert_flag){
+  uint8_t data;
+  if(invert_flag){
+    data = 0xFF;
+  }else{
+    data = 0x00;
+  }
+  uint16_t address = 9600 + (line_number * 320) + position - 40;
+  int j;
+  for(j = 0; j < length; j++){
+    comm_out(0x46);
+    data_out((uint8_t)(address & 0xFF));
+    data_out((uint8_t)(address >> 8));
+    comm_out(0x4F); //set cusor direction to down
+    comm_out(0x42);
+    int i;
+    for(i = 0; i < 9; i++){
+      data_out(data);
+    }
+	address++ ;
+  }
+  comm_out(0x4C); //reset cursor to right
 }
