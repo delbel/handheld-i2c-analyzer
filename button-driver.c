@@ -7,8 +7,8 @@
 */
 #include <stdio.h>
 #include <stddef.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
+#include <avr\io.h>
+#include <avr\interrupt.h>
 #define BUTTON_PORT_DIR 	PORTB.DIR
 #define BUTTON_PORT_OUT 	PORTB.OUT
 #define BUTTON_PORT_IN  	PORTB.IN
@@ -50,6 +50,7 @@ ISR(PORTB_INT0_vect)
 
 void init_buttons()
 {
+  BUTTON_PORT_DIR = 0x00;
   CANCEL_CONTROL_PIN = 0x02;
   //setup timer/counter interrupt for button debouncing
   TCC1.CTRLA = 0x07; //use clk/1024

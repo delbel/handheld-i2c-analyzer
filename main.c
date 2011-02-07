@@ -12,12 +12,14 @@
 #include "i2c-driver.c"
 #include "button-driver.c"
 
-#define button0_bm (1<<0)
-#define button1_bm (1<<1)
-#define button2_bm (1<<2)
-#define button3_bm (1<<3)
+#define btn0_bm (1<<0) 
+#define btn1_bm (1<<1)
+#define btn2_bm (1<<2) //cancel/back button
+#define btn3_bm (1<<3)
 
 #define VERSION "0.0.1"
+
+volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
 int main(void)
 {
@@ -41,6 +43,34 @@ int main(void)
   
   reset_LCD();
   init_LCD();
+  
+  //Start Menu code
+  write_string(4, 1, "Select Logic Level and Press Enter to");
+  write_string(5, 1, "Start Capturing Data:");
+  write_string(7, 5, "3.3 Volt Logic");
+  write_string(9, 5, "5   Volt Logic" );
+  invert_string(7, 4, 15, 1);  //highlight 3.3V selection
+  while(1/*(pressed_buttons & btn3_bm) == 0*/){
+    if((pressed_buttons & btn0_bm) | (pressed_buttons & btn1_bm)){
+	  if(pressed_buttons & btn0_bm)
+	    pressed_buttons &= ~btn0_bm;
+      else
+	    pressed_buttons &= ~btn1_bm;
+	  if(logic_level == 0)
+	    logic_level = 1;
+	  else
+	    logic_level = 0;
+	  if(logic_level){
+	    invert_string(9, 4, 15, 1); //highlight 5V selection
+		invert_string(7, 4, 15, 0); //unselect 3.3V
+	  }
+	  else{
+	    invert_string(7, 4, 15, 1); //highlight 3.3V selection
+		invert_string(9, 4, 15, 0); //unselect 5V
+	  }
+	}
+  }
+  //End of Start Menu
   
   while(1){};
   return 0;
