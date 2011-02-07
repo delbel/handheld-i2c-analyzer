@@ -1,8 +1,12 @@
-PRG            = main
+PRG            = main.c
+DEPS           = i2c-driver.c \
+                 lcd-driver.c \
+                 button-driver.c
 
-# Change above name to that of your project with NO extension.
+################################################################################
 
-OBJ            = $(PRG).o
+PRG            := $(shell echo $(PRG) | sed 's/\.c//g')
+OBJ            := $(PRG).o $(shell echo $(DEPS) | sed 's/\.c/.o/g')
 
 MCU_TARGET     = atxmega128a3
 OPTIMIZE       = -O3    # options are 1, 2, 3, s
@@ -24,7 +28,7 @@ OBJDUMP        = avr-objdump
 all: $(PRG).elf lst text eeprom
 
 $(PRG).elf: $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(PRG).c $(LIBS)
 
 clean: 
 	rm -rf *.o $(PRG).elf $(PRG).bin $(PRG).hex $(PRG).srec  
@@ -35,8 +39,12 @@ all_clean:
 	rm -rf *.lst *.map *_eeprom.* 
 
 program: $(PRG).hex
+ifeq ($(XMEGA_PORT),)
 	avrdude -p x128a3 -c avr911 -P COM6 -b 57600 -e -U flash:w:$(PRG).hex 
-
+else
+	avrdude -p x128a3 -c avr911 -P $(XMEGA_PORT) -b 57600 -e \
+		-U flash:w:$(PRG).hex
+endif
 
 lst:  $(PRG).lst
 
