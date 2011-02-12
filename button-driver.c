@@ -7,8 +7,8 @@
 */
 #include <stdio.h>
 #include <stddef.h>
-#include <avr\io.h>
-#include <avr\interrupt.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #define BUTTON_PORT_DIR 	PORTB.DIR
 #define BUTTON_PORT_OUT 	PORTB.OUT
 #define BUTTON_PORT_IN  	PORTB.IN
