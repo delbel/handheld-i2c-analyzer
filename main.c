@@ -47,6 +47,12 @@ void change_logic_level()
 
 int main(void)
 {
+  // Pull up FTDI pins
+  PORTF.PIN2CTRL = PORT_OPC_PULLUP_gc;
+  PORTF.PIN3CTRL = PORT_OPC_PULLUP_gc;
+  PORTF.PIN4CTRL = PORT_OPC_PULLUP_gc;
+  PORTF.PIN5CTRL = PORT_OPC_PULLUP_gc;
+
   init_clock();
 
   _delay_ms(5);
