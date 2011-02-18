@@ -53,7 +53,7 @@ int main(void)
 
   init_clock();
 
-  _delay_ms(5);
+  _delay_ms(1);
   
   CONTROL_DIR = 0xFF;
   DATA_DIR = 0xFF;
