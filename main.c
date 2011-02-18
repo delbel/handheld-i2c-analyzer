@@ -47,11 +47,9 @@ void change_logic_level()
 
 int main(void)
 {
-  // Pull up FTDI pins
-  PORTF.PIN2CTRL = PORT_OPC_PULLUP_gc;
-  PORTF.PIN3CTRL = PORT_OPC_PULLUP_gc;
-  PORTF.PIN4CTRL = PORT_OPC_PULLUP_gc;
-  PORTF.PIN5CTRL = PORT_OPC_PULLUP_gc;
+  // Prevent the FTDI pins from screwing things up
+  PORTF.DIR |= 0b1111<<2;
+  PORTF.OUT |= 0b1111<<2;
 
   init_clock();
 
