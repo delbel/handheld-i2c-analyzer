@@ -24,7 +24,7 @@ volatile uint8_t pressed_buttons;
 * or is being held down.
 */
 uint8_t chk_buttons(uint8_t button){
-  static uint16_t state[8] = {0,0,0,0,0,0,0,0};
+  static uint16_t state[8] = {0};
   state[button] = (state[button] <<1) | (!bit_is_clear(BUTTON_PORT_IN, button)) | 0xE000;
   if(state[button] == 0xF000) return 1;
   return 0;
@@ -37,9 +37,9 @@ ISR(TCC1_OVF_vect)
   for(i=0;i<4;i++)
   {
     if(chk_buttons(i))
-	{
-	  pressed_buttons = (pressed_buttons | (1<<i));
-	}
+	  {
+	    pressed_buttons = (pressed_buttons | (1<<i));
+	  }
   }
 }
 

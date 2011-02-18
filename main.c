@@ -21,7 +21,7 @@
 
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
-int main(void)
+void init_clock()
 {
   CCP = CCP_IOREG_gc; //Security Signature to modify clock
   // initialize clock source to be 32MHz internal oscillator (no PLL)
@@ -29,12 +29,30 @@ int main(void)
   while(!(OSC.STATUS & OSC_RC32MRDY_bm)); //wait for oscillator ready
   CCP = CCP_IOREG_gc; //Security Signature to modify clock 
   CLK.CTRL = CLK_SCLKSEL_RC32M_gc; //select sysclock 32MHz osc
+  CLK.PSCTRL = 0x00; // no division on peripheral clock 
+}
 
-  CLK.PSCTRL = 0x00;
+void change_logic_level()
+{
+	logic_level ^= 1;
+  if(logic_level){
+    invert_string(9, 4, 15, 1); //highlight 5V selection
+    invert_string(7, 4, 15, 0); //unselect 3.3V
+  }
+  else{
+    invert_string(7, 4, 15, 1); //highlight 3.3V selection
+    invert_string(9, 4, 15, 0); //unselect 5V
+  }
+}
+
+int main(void)
+{
+  init_clock();
+
+  _delay_ms(5);
   
   CONTROL_DIR = 0xFF;
   DATA_DIR = 0xFF;
-  asm("nop");
   
   PMIC.CTRL = 0x05; //low and high interrupts enabled
   sei();
@@ -50,25 +68,16 @@ int main(void)
   write_string(7, 5, "3.3 Volt Logic");
   write_string(9, 5, "5   Volt Logic" );
   invert_string(7, 4, 15, 1);  //highlight 3.3V selection
+
   while(1/*(pressed_buttons & btn3_bm) == 0*/){
-    if((pressed_buttons & btn0_bm) | (pressed_buttons & btn1_bm)){
-	  if(pressed_buttons & btn0_bm)
+    if(pressed_buttons & btn0_bm){
 	    pressed_buttons &= ~btn0_bm;
-      else
+      change_logic_level();
+    }
+    else if(pressed_buttons & btn1_bm){
 	    pressed_buttons &= ~btn1_bm;
-	  if(logic_level == 0)
-	    logic_level = 1;
-	  else
-	    logic_level = 0;
-	  if(logic_level){
-	    invert_string(9, 4, 15, 1); //highlight 5V selection
-		invert_string(7, 4, 15, 0); //unselect 3.3V
-	  }
-	  else{
-	    invert_string(7, 4, 15, 1); //highlight 3.3V selection
-		invert_string(9, 4, 15, 0); //unselect 5V
-	  }
-	}
+      change_logic_level();
+    }
   }
   //End of Start Menu
   
