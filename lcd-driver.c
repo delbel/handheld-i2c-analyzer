@@ -88,29 +88,29 @@ void init_LCD()
   delay(5);
   comm_out(0x40); //Initialize device and display
   delay(5);
-  data_out(0x30); 
-  data_out(0x87); 
-  data_out(0x07); 
-  data_out(0x27); 
-  data_out(0x2F); 
-  data_out(0xEF); 
-  data_out(0x28); 
+  data_out(0x30); //Internal CG ROM, 8 lines per character, no top-line compensation
+  data_out(0x87); //Horizontal character size = 8 pixels
+  data_out(0x07); //Vertical character size = 8 pixels
+  data_out(0x27); //39 display addresses per line
+  data_out(0x2F); //Total address range per line = 47, fosc = 8MHz, fFR = 70 Hz
+  data_out(0xEF); //L/F: 239 display lines
+  data_out(0x28); //AP: Virtual screen horizontal size is 40 addresses
   data_out(0x00); 
   comm_out(0x44); //SCROLL
-  data_out(0x00);
-  data_out(0x00);
-  data_out(0xF0);
-  data_out(0x80);
-  data_out(0x25);
-  data_out(0xF0);
-  data_out(0x00);
-  data_out(0x4B);
-  data_out(0x00);
-  data_out(0x00);
+  data_out(0x00); //First Screen block address low
+  data_out(0x00); //First Screen block address high
+  data_out(0xF0); //240 lines in block
+  data_out(0x80); //Second Screen block address low
+  data_out(0x25); //Second Screen block address high
+  data_out(0xF0); //240 lines in block
+  data_out(0x00); //Third Screen block address low
+  data_out(0x4B); //Third Screen block address high
+  data_out(0x00); //Fourth Screen block address low
+  data_out(0x00); //Fourth Screen block address high
   comm_out(0x5A); //HDOT SCR
-  data_out(0x00);
+  data_out(0x00); //Horizontal pixel shift = 0
   comm_out(0x5B); //OVLAY
-  data_out(0x01); 
+  data_out(0x01); //Inverse video superposition
   comm_out(0x58); //Display off
   data_out(0x54); //Cursor is off
   comm_out(0x46); //Set cursor to first screen block
@@ -128,8 +128,8 @@ void init_LCD()
   data_out(0x00);
   data_out(0x00);
   comm_out(0x5D); //Sets cursor form
-  data_out(0x04);
-  data_out(0x86);
+  data_out(0x04); //CRX: Horizontal cursor size = 5 pixels
+  data_out(0x86); //CRY: Vertical cursor size = 7 pixels
   comm_out(0x59); //Display on
   comm_out(0x4C); //Cursor Direction right
   delay(5);
