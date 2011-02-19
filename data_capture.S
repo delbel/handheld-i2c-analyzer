@@ -1,11 +1,14 @@
-;;//data_capture.S
+;data_capture.S
 
-.include "ATxmega128A3def.inc"
+;define pins and ports
+#include <avr/io.h>
+.equ capture_port, 0x0600
 
-;;//define pins and ports
-.equ capture_port = 0x0600
+.global data_capture
 
 data_capture: 
-sbr r16, 0x01
-sts PORTA_base + PORT_OUTSET_offset, r16
+	;push any registers
+	
+	;pop any resgisters
+	ret
 

@@ -19,6 +19,7 @@
 
 #define VERSION "0.0.1"
 
+extern void data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
 void init_clock()
