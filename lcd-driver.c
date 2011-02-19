@@ -54,7 +54,7 @@ void comm_out(unsigned char j)
   CONTROL_PORT |= CS;
 }
 
-void clear_display()
+void clear_display(void)
 {
   int n;
   comm_out(0x46);
@@ -73,7 +73,7 @@ void clear_display()
   }
 }
 
-void reset_LCD()
+void reset_LCD(void)
 {
 	CONTROL_PORT &= ~RESET;
 	delay(5);
@@ -81,7 +81,7 @@ void reset_LCD()
 	delay(10);
 }
 
-void init_LCD() 
+void init_LCD(void) 
 {
   int i;
   CONTROL_PORT |= RD;

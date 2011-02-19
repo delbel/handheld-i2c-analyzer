@@ -36,7 +36,7 @@
 extern void data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
-void init_clock()
+void init_clock(void)
 {
   CCP = CCP_IOREG_gc; //Security Signature to modify clock
   // initialize clock source to be 32MHz internal oscillator (no PLL)
@@ -47,7 +47,7 @@ void init_clock()
   CLK.PSCTRL = 0x00; // no division on peripheral clock 
 }
 
-void change_logic_level()
+void change_logic_level(void)
 {
 	logic_level ^= 1;
   if(logic_level){
@@ -60,7 +60,7 @@ void change_logic_level()
   }
 }
 
-void init_capture()
+void init_capture(void)
 {
   
 }

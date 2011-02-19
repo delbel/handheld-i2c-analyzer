@@ -48,7 +48,7 @@ ISR(PORTB_INT0_vect)
   //place value to be checked in register
 }
 
-void init_buttons()
+void init_buttons(void)
 {
   BUTTON_PORT_DIR = 0x00;
   CANCEL_CONTROL_PIN = 0x02;
@@ -62,24 +62,24 @@ void init_buttons()
   PORTB.INTCTRL = 0x03; //high level interrupt
 }
 
-void enable_normal_buttons()
+void enable_normal_buttons(void)
 {
   //enable overflow vector
   TCC1.INTCTRLA = 0x01; //low interrupt priority
 }
 
-void disable_normal_buttons()
+void disable_normal_buttons(void)
 {
   //disable overflow vector
   TCC1.INTCTRLA = 0x00; //interrupt off
 }
 
-void enable_cancel_interrupt()
+void enable_cancel_interrupt(void)
 {
   PORTB.INT0MASK = CANCEL_BUTTON; //enable interrupt
 }
 
-void disable_cancel_interrupt()
+void disable_cancel_interrupt(void)
 {
   PORTB.INT0MASK = 0x00; //disable interrupt
 }
