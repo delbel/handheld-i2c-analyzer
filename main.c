@@ -5,8 +5,10 @@
 */
 
 //Hardware Setup:
-//PORTA : Caputure Port
-//PORTB 0-3: Button input
+//PORTA 0: Input A
+//PORTA 1: Input B
+//PORTA 2-3: GND for Input
+//PORTB 0-3: Button input - Red is 0
 //PORTC 0: SDA for Digital Pot
 //PORTC 1: SCL for Digital Pot
 //PORTC 2-3: Ground for I2C line
@@ -19,14 +21,15 @@
 #include <avr/io.h>
 #define F_CPU 32000000UL
 #include <util/delay.h>
+#include <string.h>
 #include "lcd-driver.c"
 #include "i2c-driver.c"
 #include "button-driver.c"
 
-#define btn0_bm (1<<0) //scroll down
-#define btn1_bm (1<<1) //scroll up
-#define btn2_bm (1<<2) //cancel/back button
-#define btn3_bm (1<<3) //enter
+#define scroll_up (1<<0) //scroll up
+#define enter (1<<1) //enter
+#define cancel (1<<2) //cancel/back button
+#define scroll_down (1<<3) //scroll down
 
 #define VERSION "0.0.1"
 
@@ -55,6 +58,11 @@ void change_logic_level()
     invert_string(7, 4, 15, 1); //highlight 3.3V selection
     invert_string(9, 4, 15, 0); //unselect 5V
   }
+}
+
+void init_capture()
+{
+  
 }
 
 int main(void)
@@ -88,13 +96,13 @@ int main(void)
   write_string(9, 5, "5   Volt Logic" );
   invert_string(7, 4, 15, 1);  //highlight 3.3V selection
 
-  while((pressed_buttons & btn3_bm) == 0){
-    if(pressed_buttons & btn0_bm){
-	    pressed_buttons &= ~btn0_bm;
+  while((pressed_buttons & enter) == 0){
+    if(pressed_buttons & scroll_up){
+	    pressed_buttons &= ~scroll_up;
       change_logic_level();
     }
-    else if(pressed_buttons & btn1_bm){
-	    pressed_buttons &= ~btn1_bm;
+    else if(pressed_buttons & scroll_down){
+	    pressed_buttons &= ~scroll_down;
       change_logic_level();
     }
   }
@@ -108,7 +116,7 @@ int main(void)
   }
   
   //write out message to display during capturing
-  reset_LCD();
+  clear_display();
   write_string(4, 1, "Device is capturing data...");
   write_string(6, 1, "Press cancel to stop capturing");
   write_string(7, 1, "data and analyze captured data.");
@@ -117,11 +125,23 @@ int main(void)
   write_string(11, 1, "are captured.");
   
   //Initialization for capture code
-  
+  init_capture();
   //Begin capture code
   data_capture();
   
   //Analyze and display
+  
+  //TEST CODE:
+  PORTA.DIR = 0xFC;
+  PORTA.OUT = 0x00;
+  while(1){
+    char string[3];
+	sprintf(string, "%i", PORTA.IN);
+    write_string(2, 1, string);
+    _delay_ms(250);
+  }
+  
+  //TEST CODE:
   
   while(1){};
   return 0;

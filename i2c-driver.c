@@ -11,9 +11,9 @@
 #include <util/delay.h>
 #define SDA 		(1<<0)
 #define SCL 		(1<<1)
-#define TWI_PORT 	PORTC.PORT
+#define TWI_PORT 	PORTC.OUT
 #define TWI_DIR 	PORTC.DIR
-#define TWI_PIN 	PORTC.PIN
+#define TWI_PIN 	PORTC.IN
 #define POT_ADDRESS		0b01011110	
 #define POT_ADDRESS_READ	(POT_ADDRESS | 0x01)
 #define POT_ADDRESS_WRITE	(POT_ADDRESS | 0x00)
@@ -23,7 +23,10 @@
 
 void init_I2C(void){
   //Set up I2C using TWIC (PORTC)
-  TWI_DIR |= (SDA | SCL);
+  TWI_DIR |= (SDA | SCL | (1<<2) | (1<<3) | (1<<6) | (1<<7));
+  //Set 2-3, 7 to ground and 6 to VDD
+  TWI_PORT |= (1<<6);
+  
   TWIC.MASTER.CTRLA = (1<<3);
   TWIC.MASTER.BAUD = 0x23;
   TWIC.MASTER.STATUS |= 0x01;

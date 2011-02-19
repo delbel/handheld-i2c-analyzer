@@ -447,9 +447,9 @@ gccversion :
 # Program the device.  
 program: $(TARGET).hex
 ifeq ($(XMEGA_PORT),)
-	$(AVRDUDE) -p x128a3 -c avr911 -P $(XMEGA_PORT) -b 57600 -e-U flash:w:$(TARGET).hex
-else
 	$(AVRDUDE) -p x128a3 -c avr911 -P COM6 -b 57600 -e -U flash:w:$(TARGET).hex
+else
+	$(AVRDUDE) -p x128a3 -c avr911 -P $(XMEGA_PORT) -b 57600 -e -U flash:w:$(TARGET).hex
 endif
 
 # Generate avr-gdb config/init file which does the following:

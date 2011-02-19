@@ -65,8 +65,8 @@ void clear_display()
 	data_out(0x20);
   }
   comm_out(0x46);
-  data_out(0xB0);
-  data_out(0x04);
+  data_out(0x80);
+  data_out(0x25);
   comm_out(0x42);
   for(n=0;n<9600;n++){
 	data_out(0x00);
