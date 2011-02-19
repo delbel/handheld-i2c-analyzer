@@ -3,6 +3,17 @@
   
   This is the main function of the Handheld I2C Device
 */
+
+//Hardware Setup:
+//PORTA : Caputure Port
+//PORTB 0-3: Button input
+//PORTC 0: SDA for Digital Pot
+//PORTC 1: SCL for Digital Pot
+//PORTC 2-3: Ground for I2C line
+//PORTC 6: VDD for Level shifters
+//PORTC 7: GRD for Level shifters
+//PORTD : Data out for LCD screen
+//PORTE 0-4: Control out for LCD screen
 #include <stdio.h>
 #include <stddef.h>
 #include <avr/io.h>
@@ -12,10 +23,10 @@
 #include "i2c-driver.c"
 #include "button-driver.c"
 
-#define btn0_bm (1<<0) 
-#define btn1_bm (1<<1)
+#define btn0_bm (1<<0) //scroll down
+#define btn1_bm (1<<1) //scroll up
 #define btn2_bm (1<<2) //cancel/back button
-#define btn3_bm (1<<3)
+#define btn3_bm (1<<3) //enter
 
 #define VERSION "0.0.1"
 
@@ -60,12 +71,15 @@ int main(void)
   DATA_DIR = 0xFF;
   
   PMIC.CTRL = 0x05; //low and high interrupts enabled
-  sei();
-  init_buttons();
-  enable_normal_buttons();
   
   reset_LCD();
   init_LCD();
+  
+  init_I2C();
+  
+  sei();
+  init_buttons();
+  enable_normal_buttons();
   
   //Start Menu code
   write_string(4, 1, "Select Logic Level and Press Enter to");
@@ -74,7 +88,7 @@ int main(void)
   write_string(9, 5, "5   Volt Logic" );
   invert_string(7, 4, 15, 1);  //highlight 3.3V selection
 
-  while(1/*(pressed_buttons & btn3_bm) == 0*/){
+  while((pressed_buttons & btn3_bm) == 0){
     if(pressed_buttons & btn0_bm){
 	    pressed_buttons &= ~btn0_bm;
       change_logic_level();
@@ -85,6 +99,29 @@ int main(void)
     }
   }
   //End of Start Menu
+  
+  //update the I2C pot to correct reference voltage
+  if(logic_level){
+    set_pot(0x40);
+  }else{
+    set_pot(0x33);
+  }
+  
+  //write out message to display during capturing
+  reset_LCD();
+  write_string(4, 1, "Device is capturing data...");
+  write_string(6, 1, "Press cancel to stop capturing");
+  write_string(7, 1, "data and analyze captured data.");
+  write_string(9, 1, "Device will stop automatically");
+  write_string(10, 1, "when 256 single byte transactions");
+  write_string(11, 1, "are captured.");
+  
+  //Initialization for capture code
+  
+  //Begin capture code
+  data_capture();
+  
+  //Analyze and display
   
   while(1){};
   return 0;
