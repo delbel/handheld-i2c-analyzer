@@ -18,6 +18,7 @@
 //PORTE 0-4: Control out for LCD screen
 #include <stdio.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <avr/io.h>
 #define F_CPU 32000000UL
 #include <util/delay.h>
@@ -33,8 +34,14 @@
 
 #define VERSION "0.0.1"
 
+#define CAPTURE_DATA_BYTES 1024
+
 extern void data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
+
+volatile uint8_t *zl = (uint8_t *)0x1e;
+volatile uint8_t *zh = (uint8_t *)0x1f;
+volatile uint8_t *capture_data;
 
 void init_clock(void)
 {
@@ -62,7 +69,16 @@ void change_logic_level(void)
 
 void init_capture(void)
 {
-  
+  uint16_t i;
+
+  // Zero out data array
+  for (i=0; i < CAPTURE_DATA_BYTES; i++){
+    capture_data[i] = 0;
+  }
+
+  // Set Z to point to the start of the array
+  *zl = (uint8_t)((uint16_t)capture_data & 0xff);
+  *zh = (uint8_t)((uint16_t)capture_data >> 8);
 }
 
 int main(void)
@@ -88,6 +104,12 @@ int main(void)
   sei();
   init_buttons();
   enable_normal_buttons();
+
+  //Allocate space for captured data
+  capture_data = (uint8_t *)malloc(CAPTURE_DATA_BYTES);
+  if (capture_data != NULL) {
+    //something bad happened
+  }
   
   //Start Menu code
   write_string(4, 1, "Select Logic Level and Press Enter to");
