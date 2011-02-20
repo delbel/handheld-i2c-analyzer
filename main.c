@@ -31,9 +31,21 @@
 #define cancel (1<<2) //cancel/back button
 #define scroll_down (1<<3) //scroll down
 
+#define START 1
+#define STOP 2
+#define DATA 3
+#define RSTART 4
+#define ABNORM 5
+#define ASTOP 6
+#define ASTART 7
+
+#define ACK 1
+#define NACK 2
+
 #define VERSION "0.0.1"
 
 #define CAPTURE_DATA_BYTES 1024
+#define MAX_LINE 24
 
 extern uint16_t data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
@@ -80,6 +92,68 @@ void init_capture(void)
   // Set Z to point to the start of the array
   zlow = (uint8_t)capture_data_start;
   zhigh = (uint8_t)(capture_data_start >> 8);
+}
+
+void display_analyze(int startByte/*, int endByte*/)
+{
+  clear_display();
+  uint8_t line = 1;
+  int i = startByte;
+  uint8_t condition;
+  while(line <= MAX_LINE /*& if i > endByte*/){
+    if(capture_data[i] == 0x00)
+	{
+	  line++;
+	  i++;
+	  continue;
+	}
+	condition = (capture_data[i] & 0x0F);\
+	
+	if(condition == START){
+	  write_string(line, 1, "START");
+	}
+	else if(condition == STOP){
+	  write_string(line, 1, "STOP");
+	  line++;
+	  i++;
+	  continue;
+	}
+	else if(condition == RSTART){
+	  line++;
+	  write_string(line, 1, "REPEATED START");
+	}
+	else if(condition == ABNORM){
+	  write_string(line, 1, "ABNORMAL TRANSITION");
+	  line++;
+	  i++;
+	  continue;
+	}
+	else if(condition == ASTOP){
+	  write_string(line, 1, "ABNORMAL STOP CONDITION");
+	  line++;
+	  i++;
+	  continue;
+	}
+	else if(condition == ASTART){
+	  write_string(line, 1, "ABNORMAL START CONDITION");
+	}
+	else if(condition == DATA){
+	  i++;
+	  char string2[40];
+	  sprintf(string2, "DATA: %X + %s", capture_data[i], (((capture_data[i+1] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
+	  write_string(line, 1, string2);
+	  i++;
+	  line++;
+	  continue;
+	}
+	line++;
+	i++;
+	char string[40];
+	sprintf(string, "ADDR: %X + %s + %s", (capture_data[i] >> 1), ((capture_data[i] & 0x01) == 0x01)?"READ":"WRITE", (((capture_data[i+1] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
+	write_string(line, 1, string);
+	i++;
+	line++;
+  }
 }
 
 int main(void)
@@ -143,10 +217,20 @@ int main(void)
   
   //Initialization for capture code
   init_capture();
+  
   //Begin capture code
   capture_data_end = data_capture();
   
+  //TEST CODE:
+  capture_data[0] = 0x01;
+  capture_data[1] = 0xF1;
+  capture_data[2] = 0x13;
+  capture_data[3] = 0xFF;
+  capture_data[4] = 0x22;
+  //TEST CODE:
+  
   //Analyze and display
+  display_analyze(0/*,end value of data*/);
   
   //TEST CODE:
   char h1[3];
