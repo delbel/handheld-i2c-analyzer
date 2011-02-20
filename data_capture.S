@@ -44,15 +44,14 @@ data_capture:
 idle_start:
   in r16,  VPORT0_IN    ;read new value
 
-idle_start_11:
   cpi r16, 0b01         ;check if new value is 0b01
-  breq idle_start_11_01
+  breq idle_start_xx_01
   cpi r16, 0b10         ;check if new value is 0b10
-  breq idle_start_11_10
+  breq idle_start_xx_10
   cpi r16, 0b11         ;check if new value is 0b11
   breq idle_start
 
-idle_start_11_00:       ;11 -> 00 - Abnormal transition
+idle_start_xx_00:       ;xx -> 00 - Abnormal transition
   ld r19, Z
   andi r19, 0b11110000
   ori r19, ABNORM
@@ -61,7 +60,7 @@ idle_start_11_00:       ;11 -> 00 - Abnormal transition
   st Z+, r19
   rjmp abnormal
 
-idle_start_11_01:       ;11 -> 01 - Normal start
+idle_start_xx_01:       ;xx -> 01 - Normal start
   ld r19, Z
   andi r19, 0b11110000
   ori r19, START
@@ -69,7 +68,7 @@ idle_start_11_01:       ;11 -> 01 - Normal start
   ldi r18, 0
   rjmp address_rw
 
-idle_start_11_10:       ;11 -> 10 - Abnormal transition
+idle_start_xx_10:       ;xx -> 10 - Abnormal transition
   ld r19, Z
   andi r19, 0b11110000
   ori r19, ABNORM
