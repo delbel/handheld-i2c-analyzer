@@ -50,7 +50,7 @@ idle_start_11:
   cpi r16, 0b10         ;check if new value is 0b10
   breq idle_start_11_10
   cpi r16, 0b11         ;check if new value is 0b11
-  breq idle_start_11_11  
+  breq idle_start
 
 idle_start_11_00:       ;11 -> 00 - Abnormal transition
   ld r19, Z
@@ -78,9 +78,6 @@ idle_start_11_10:       ;11 -> 10 - Abnormal transition
   st Z+, r19
   rjmp abnormal
 
-idle_start_11_11:       ;11 -> 11
-  rjmp idle_start
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 abnormal:
@@ -93,6 +90,8 @@ abnormal:
 
 address_rw:
   nop
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 done:
 	;pop any resgisters
