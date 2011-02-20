@@ -47,11 +47,9 @@
 #define CAPTURE_DATA_BYTES 1024
 #define MAX_LINE 24
 
-extern uint16_t data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
-volatile uint8_t zlow;
-volatile uint8_t zhigh;
+extern uint16_t data_capture(uint16_t);
 volatile uint8_t capture_data[CAPTURE_DATA_BYTES];
 const uint16_t capture_data_start = (uint16_t)capture_data;
 volatile uint16_t capture_data_end;
@@ -88,10 +86,6 @@ void init_capture(void)
   for (i=0; i < CAPTURE_DATA_BYTES; i++){
     capture_data[i] = 0;
   }
-
-  // Set Z to point to the start of the array
-  zlow = (uint8_t)capture_data_start;
-  zhigh = (uint8_t)(capture_data_start >> 8);
 }
 
 void display_analyze(int startByte/*, int endByte*/)
@@ -219,7 +213,7 @@ int main(void)
   init_capture();
   
   //Begin capture code
-  capture_data_end = data_capture();
+  capture_data_end = data_capture(capture_data_start);
   
   //TEST CODE:
   capture_data[0] = 0x01;

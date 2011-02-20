@@ -31,8 +31,8 @@ data_capture:
   push r31
 
   ;set up the pointer to the array
-  lds r30, zlow
-  lds r31, zhigh
+  mov r30, r24
+  mov r31, r25
 
   ;set up virtual port
   lds    r16, PORTCFG_VPCTRLA
