@@ -22,22 +22,22 @@
 ;r19 - temp
 
 data_capture: 
-	;push any registers
-	push r16
+  ;push any registers
+  push r16
   push r17
   push r18
   push r19
-	push r30
-	push r31
+  push r30
+  push r31
 
   ;set up the pointer to the array
-	lds r30, zlow
-	lds r31, zhigh
+  lds r30, zlow
+  lds r31, zhigh
 
   ;set up virtual port
-  lds		r16, PORTCFG_VPCTRLA
-  andi	r16, ~PORTCFG_VP0MAP_gm
-  sts		PORTCFG_VPCTRLA, r16
+  lds    r16, PORTCFG_VPCTRLA
+  andi  r16, ~PORTCFG_VP0MAP_gm
+  sts    PORTCFG_VPCTRLA, r16
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -94,12 +94,16 @@ address_rw:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 done:
-	;pop any resgisters
-	pop r31
-	pop r30
+  ;return end of data array
+  mov r24, r30
+  mov r25, r31
+
+  ;pop any resgisters
+  pop r31
+  pop r30
   pop r19
   pop r18
   pop r17
-	pop r16
-	ret
+  pop r16
+  ret
 

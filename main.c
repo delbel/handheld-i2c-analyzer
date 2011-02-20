@@ -35,13 +35,14 @@
 
 #define CAPTURE_DATA_BYTES 1024
 
-extern void data_capture(void);
+extern uint16_t data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
 volatile uint8_t zlow;
 volatile uint8_t zhigh;
 volatile uint8_t capture_data[CAPTURE_DATA_BYTES];
 const uint16_t capture_data_start = (uint16_t)capture_data;
+volatile uint16_t capture_data_end;
 
 void init_clock(void)
 {
@@ -77,7 +78,6 @@ void init_capture(void)
   }
 
   // Set Z to point to the start of the array
-  
   zlow = (uint8_t)capture_data_start;
   zhigh = (uint8_t)(capture_data_start >> 8);
 }
@@ -144,7 +144,7 @@ int main(void)
   //Initialization for capture code
   init_capture();
   //Begin capture code
-  data_capture();
+  capture_data_end = data_capture();
   
   //Analyze and display
   
