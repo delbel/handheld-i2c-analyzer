@@ -8,6 +8,18 @@
 .equ START, 1
 .equ STOP, 2
 .equ DATA, 3
+.equ RSTART, 4
+.equ ABNORMAL, 5
+.equ ASTOP, 6
+.equ ASTART, 7
+
+.equ ACK, 1
+.equ NACK, 2
+
+;r16 - previous value
+;r17 - new value
+;r18 - i
+;r19 - temp
 
 data_capture: 
 	;push any registers
