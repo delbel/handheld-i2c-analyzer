@@ -1,0 +1,89 @@
+MACHINE_NAME:
+  mov r17, r16          ;copy previous value
+  in r16,  VPORT0_IN    ;read new value
+  cpi r17, 0b01         ;check if previous value is 0b01
+  breq MACHINE_NAME_01
+  cpi r17, 0b10         ;check if previous value is 0b10
+  breq MACHINE_NAME_10
+  cpi r17, 0b11         ;check if previous value is 0b11
+  breq MACHINE_NAME_11  
+
+MACHINE_NAME_00:
+  cpi r16, 0b00         ;check if new value is 0b01
+  breq MACHINE_NAME_00_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq MACHINE_NAME_00_10
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq MACHINE_NAME_00_11  
+
+MACHINE_NAME_00_00:       ;00 -> 00
+  TODO
+
+MACHINE_NAME_00_01:       ;00 -> 01
+  TODO
+
+MACHINE_NAME_00_10:       ;00 -> 10
+  TODO
+
+MACHINE_NAME_00_11:       ;00 -> 11
+  TODO
+
+MACHINE_NAME_01:
+  cpi r16, 0b01         ;check if new value is 0b01
+  breq MACHINE_NAME_01_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq MACHINE_NAME_01_10
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq MACHINE_NAME_01_11  
+
+MACHINE_NAME_01_00:       ;01 -> 00
+  TODO
+
+MACHINE_NAME_01_01:       ;01 -> 01
+  TODO
+
+MACHINE_NAME_01_10:       ;01 -> 10
+  TODO
+
+MACHINE_NAME_01_11:       ;01 -> 11
+  TODO
+
+MACHINE_NAME_10:
+  cpi r16, 0b01         ;check if new value is 0b01
+  breq MACHINE_NAME_10_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq MACHINE_NAME_10_10
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq MACHINE_NAME_10_11  
+
+MACHINE_NAME_10_00:       ;10 -> 00
+  TODO
+
+MACHINE_NAME_10_01:       ;10 -> 01
+  TODO
+
+MACHINE_NAME_10_10:       ;10 -> 10
+  TODO
+
+MACHINE_NAME_10_11:       ;10 -> 11
+  TODO
+
+MACHINE_NAME_11:
+  cpi r16, 0b01         ;check if new value is 0b01
+  breq MACHINE_NAME_11_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq MACHINE_NAME_11_10
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq MACHINE_NAME_11_11  
+
+MACHINE_NAME_11_00:       ;11 -> 00
+  TODO
+
+MACHINE_NAME_11_01:       ;11 -> 01
+  TODO
+
+MACHINE_NAME_11_10:       ;11 -> 10
+  TODO
+
+MACHINE_NAME_11_11:       ;11 -> 11
+  TODO
