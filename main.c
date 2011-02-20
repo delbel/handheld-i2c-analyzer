@@ -38,8 +38,8 @@
 extern void data_capture(void);
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
-volatile uint8_t *zl = (uint8_t *)0x1e;
-volatile uint8_t *zh = (uint8_t *)0x1f;
+volatile uint8_t zlow;
+volatile uint8_t zhigh;
 volatile uint8_t capture_data[CAPTURE_DATA_BYTES];
 const uint16_t capture_data_start = (uint16_t)capture_data;
 
@@ -77,8 +77,9 @@ void init_capture(void)
   }
 
   // Set Z to point to the start of the array
-  *zl = (uint8_t)capture_data_start;
-  *zh = (uint8_t)(capture_data_start >> 8);
+  
+  zlow = (uint8_t)capture_data_start;
+  zhigh = (uint8_t)(capture_data_start >> 8);
 }
 
 int main(void)
@@ -148,6 +149,14 @@ int main(void)
   //Analyze and display
   
   //TEST CODE:
+  char h1[3];
+  char h2[3];
+  sprintf(h1, "%i", capture_data[0]);
+  sprintf(h2, "%i", capture_data[1]);
+  
+  write_string(13, 1, h1);
+  write_string(14, 1, h2);
+  
   PORTA.DIR = 0xFC;
   PORTA.OUT = 0x00;
   while(1){
