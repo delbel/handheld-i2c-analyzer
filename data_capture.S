@@ -65,8 +65,7 @@ idle_start_11_00:       ;11 -> 00 - Abnormal transition
   andi r19, 0b11110000
   ori r19, ABNORM
   st Z+, r19
-  ldi r19, 0
-  st Z+, r19
+  st Z+, r20
   rjmp abnormal
 
 idle_start_11_01:       ;11 -> 01 - Normal start
@@ -82,8 +81,7 @@ idle_start_11_10:       ;11 -> 10 - Abnormal transition
   andi r19, 0b11110000
   ori r19, ABNORM
   st Z+, r19
-  ldi r19, 0
-  st Z+, r19
+  st Z+, r20
   rjmp abnormal
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -216,6 +214,7 @@ address_rw_11_01:       ;11 -> 01
   andi r19, 0b11110000
   ori r19, ASTART
   st Z+, r19
+  st Z+, r20
   ldi r18, 0
   rjmp address_rw
 
