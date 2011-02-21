@@ -227,6 +227,9 @@ ack_nack:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 done:
+  ;disable cancel button
+  st X, r20
+
   ;return end of data array
   mov r24, r30
   mov r25, r31
@@ -246,7 +249,6 @@ done:
 ;Cancel button ISR
 .global PORTB_INT0_vect
 PORTB_INT0_vect:
-  st X, r20
   pop r19
   pop r19
   ldi r19, lo8(done)
