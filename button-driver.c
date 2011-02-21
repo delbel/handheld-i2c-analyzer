@@ -43,10 +43,10 @@ ISR(TCC1_OVF_vect)
   }
 }
 
-ISR(PORTB_INT0_vect)
-{
-  //place value to be checked in register
-}
+//ISR(PORTB_INT0_vect)
+//{
+//  //place value to be checked in register
+//}
 
 void init_buttons(void)
 {
@@ -74,12 +74,12 @@ void disable_normal_buttons(void)
   TCC1.INTCTRLA = 0x00; //interrupt off
 }
 
-void enable_cancel_interrupt(void)
-{
-  PORTB.INT0MASK = CANCEL_BUTTON; //enable interrupt
-}
+//void enable_cancel_interrupt(void)
+//{
+//  PORTB.INT0MASK = CANCEL_BUTTON; //enable interrupt
+//}
 
-void disable_cancel_interrupt(void)
-{
-  PORTB.INT0MASK = 0x00; //disable interrupt
-}
+//void disable_cancel_interrupt(void)
+//{
+//  PORTB.INT0MASK = 0x00; //disable interrupt
+//}

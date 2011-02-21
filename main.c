@@ -211,9 +211,15 @@ int main(void)
   
   //Initialization for capture code
   init_capture();
+
+  //Disable normal button checking
+  disable_normal_buttons();
   
   //Begin capture code
   capture_data_end = data_capture(capture_data_start);
+
+  //Re-enable normal button checking
+  enable_normal_buttons();
   
   //TEST CODE:
   capture_data[0] = 0x01;

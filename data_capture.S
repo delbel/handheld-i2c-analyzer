@@ -5,6 +5,8 @@
 
 .global data_capture
 
+.equ CANCEL_BUTTON, 1<<2
+
 .equ START, 1
 .equ STOP, 2
 .equ DATA, 3
@@ -29,6 +31,8 @@ data_capture:
   push r18
   push r19
   push r20
+  push r26
+  push r27
   push r30
   push r31
 
@@ -43,6 +47,12 @@ data_capture:
 
   ;set up 0 register
   ldi r20, 0
+
+  ;enable cancel interrupt
+  ldi r19, CANCEL_BUTTON
+  ldi r26, lo8(PORTB_INT0MASK)
+  ldi r27, hi8(PORTB_INT0MASK)
+  st X, r19
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -224,10 +234,24 @@ done:
   ;pop any resgisters
   pop r31
   pop r30
+  pop r27
+  pop r26
   pop r20
   pop r19
   pop r18
   pop r17
   pop r16
   ret
+
+;Cancel button ISR
+.global PORTB_INT0_vect
+PORTB_INT0_vect:
+  st X, r20
+  pop r19
+  pop r19
+  ldi r19, lo8(done)
+  push r19
+  ldi r19, hi8(done)
+  push r19
+  reti
 
