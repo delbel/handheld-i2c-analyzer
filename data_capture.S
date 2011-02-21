@@ -92,6 +92,112 @@ abnormal:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 address_rw:
+  mov r17, r16          ;copy previous value
+  in r16,  VPORT0_IN    ;read new value
+  cpi r17, 0b01         ;check if previous value is 0b01
+  breq address_rw_01
+  cpi r17, 0b10         ;check if previous value is 0b10
+  breq address_rw_10
+  cpi r17, 0b11         ;check if previous value is 0b11
+  breq address_rw_11  
+
+address_rw_00:
+  cpi r16, 0b01         ;check if new value is 0b01
+  breq address_rw_00_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq address_rw
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq address_rw_00_11  
+
+address_rw_00_00:       ;00 -> 00
+  rjmp address_rw
+
+address_rw_00_01:       ;00 -> 01
+  cpi r18, 7            ;check if i = 7
+  breq address_rw_00_01_i7
+  
+address_rw_00_01_i0to6: ;00 -> 01, i=0..6
+  ld r19, Z
+  lsl r19
+  st Z, r19
+  inc r18
+  rjmp address_rw
+
+address_rw_00_01_i7:    ;00 -> 01, i=7
+  ld r19, Z
+  lsl r19
+  st Z+, r19
+  rjmp ack_nack
+
+address_rw_00_11:       ;00 -> 11
+  cpi r18, 7            ;check if i = 7
+  breq address_rw_00_11_i7
+  
+address_rw_00_11_i0to6: ;00 -> 11, i=0..6
+  ld r19, Z
+  lsl r19
+  ori r19, 1
+  st Z, r19
+  inc r18
+  rjmp address_rw
+
+address_rw_00_11_i7:    ;00 -> 11, i=7
+  ld r19, Z
+  lsl r19
+  ori r19, 1
+  st Z+, r19
+  rjmp ack_nack
+
+address_rw_01:
+  cpi r16, 0b11         ;check if new value is 0b11
+  brne address_rw
+
+address_rw_01_11:       ;01 -> 11
+  nop ;TODO
+
+address_rw_10:
+  cpi r16, 0b01         ;check if new value is 0b01
+  breq address_rw_10_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq address_rw_10_10
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq address_rw_10_11  
+
+address_rw_10_00:       ;10 -> 00
+  nop ;TODO
+
+address_rw_10_01:       ;10 -> 01
+  nop ;TODO
+
+address_rw_10_10:       ;10 -> 10
+  nop ;TODO
+
+address_rw_10_11:       ;10 -> 11
+  nop ;TODO
+
+address_rw_11:
+  cpi r16, 0b01         ;check if new value is 0b01
+  breq address_rw_11_01
+  cpi r16, 0b10         ;check if new value is 0b10
+  breq address_rw_11_10
+  cpi r16, 0b11         ;check if new value is 0b11
+  breq address_rw_11_11  
+
+address_rw_11_00:       ;11 -> 00
+  nop ;TODO
+
+address_rw_11_01:       ;11 -> 01
+  nop ;TODO
+
+address_rw_11_10:       ;11 -> 10
+  nop ;TODO
+
+address_rw_11_11:       ;11 -> 11
+  nop ;TODO
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ack_nack:
   nop
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
