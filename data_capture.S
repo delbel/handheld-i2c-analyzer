@@ -42,7 +42,10 @@ data_capture:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 idle_start:
+  mov r17, r16          ;copy previous value
   in r16,  VPORT0_IN    ;read new value
+  cpi r17, 0b11         ;check if previous value is 0b11 (should be)
+  brne idle_start
 
 idle_start_11:
   cpi r16, 0b01         ;check if new value is 0b01
