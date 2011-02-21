@@ -99,11 +99,12 @@ abnormal:
 address_rw:
   mov r17, r16          ;copy previous value
   in r16,  VPORT0_IN    ;read new value
+  cpi r17, 0b00         ;check if previous value is 0b00
+  breq address_rw_00
   cpi r17, 0b01         ;check if previous value is 0b01
   breq address_rw_01
   cpi r17, 0b10         ;check if previous value is 0b10
   breq address_rw_10
-  cpi r17, 0b11         ;check if previous value is 0b11
   rjmp address_rw_11
 
 address_rw_00:
