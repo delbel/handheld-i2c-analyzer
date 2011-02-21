@@ -104,12 +104,8 @@ address_rw:
 address_rw_00:
   cpi r16, 0b01         ;check if new value is 0b01
   breq address_rw_00_01
-  cpi r16, 0b10         ;check if new value is 0b10
-  breq address_rw
   cpi r16, 0b11         ;check if new value is 0b11
   breq address_rw_00_11  
-
-address_rw_00_00:       ;00 -> 00
   rjmp address_rw
 
 address_rw_00_01:       ;00 -> 01
