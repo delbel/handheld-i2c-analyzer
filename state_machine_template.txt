@@ -9,7 +9,7 @@ MACHINE_NAME:
   breq MACHINE_NAME_11  
 
 MACHINE_NAME_00:
-  cpi r16, 0b00         ;check if new value is 0b01
+  cpi r16, 0b01         ;check if new value is 0b01
   breq MACHINE_NAME_00_01
   cpi r16, 0b10         ;check if new value is 0b10
   breq MACHINE_NAME_00_10
