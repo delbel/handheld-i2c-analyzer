@@ -55,12 +55,11 @@ idle_start:
 idle_start_11:
   cpi r16, 0b01         ;check if new value is 0b01
   breq idle_start_11_01
-  cpi r16, 0b10         ;check if new value is 0b10
-  breq idle_start_11_10
   cpi r16, 0b11         ;check if new value is 0b11
   breq idle_start
 
 idle_start_11_00:       ;11 -> 00 - Abnormal transition
+idle_start_11_10:       ;11 -> 10 - Abnormal transition
   ld r19, Z
   andi r19, 0b11110000
   ori r19, ABNORM
@@ -75,14 +74,6 @@ idle_start_11_01:       ;11 -> 01 - Normal start
   st Z+, r19
   ldi r18, 0
   rjmp address_rw
-
-idle_start_11_10:       ;11 -> 10 - Abnormal transition
-  ld r19, Z
-  andi r19, 0b11110000
-  ori r19, ABNORM
-  st Z+, r19
-  st Z+, r20
-  rjmp abnormal
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
