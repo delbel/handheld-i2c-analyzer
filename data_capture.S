@@ -251,9 +251,6 @@ done:
 PORTB_INT0_vect:
   pop r19
   pop r19
-  ldi r19, lo8(done)
-  push r19
-  ldi r19, hi8(done)
-  push r19
-  reti
+  pop r19
+  rjmp done
 
