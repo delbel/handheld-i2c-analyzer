@@ -244,13 +244,35 @@ int main(void)
     char h1[3];
     char h2[3];
     char h3[3];
+    char h4[3];
+    char h5[3];
+    char h6[3];
+    char h7[3];
+    char h8[3];
+    char h9[3];
+    char h10[3];
     sprintf(h1, "%02x", capture_data[0]);
     sprintf(h2, "%02x", capture_data[1]);
     sprintf(h3, "%02x", capture_data[2]);
+    sprintf(h4, "%02x", capture_data[3]);
+    sprintf(h5, "%02x", capture_data[4]);
+    sprintf(h6, "%02x", capture_data[5]);
+    sprintf(h7, "%02x", capture_data[6]);
+    sprintf(h8, "%02x", capture_data[7]);
+    sprintf(h9, "%02x", capture_data[8]);
+    sprintf(h10, "%02x", capture_data[9]);
     
     write_string(13, 1, h1);
     write_string(14, 1, h2);
     write_string(15, 1, h3);
+    write_string(16, 1, h4);
+    write_string(17, 1, h5);
+    write_string(18, 1, h6);
+    write_string(19, 1, h7);
+    write_string(20, 1, h8);
+    write_string(21, 1, h9);
+    write_string(22, 1, h10);
+
 #if 0
     PORTA.DIR = 0xFC;
     PORTA.OUT = 0x00;
