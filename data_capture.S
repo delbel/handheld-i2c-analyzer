@@ -252,5 +252,10 @@ PORTB_INT0_vect:
   pop r19
   pop r19
   pop r19
-  rjmp done
+  ldi r19, lo8(pm(done))
+  push r19
+  ldi r19, hi8(pm(done))
+  push r19
+  push r20
+  reti
 

@@ -174,84 +174,95 @@ int main(void)
   init_buttons();
   enable_normal_buttons();
 
-  //Start Menu code
-  write_string(4, 1, "Select Logic Level and Press Enter to");
-  write_string(5, 1, "Start Capturing Data:");
-  write_string(7, 5, "3.3 Volt Logic");
-  write_string(9, 5, "5   Volt Logic" );
-  invert_string(7, 4, 15, 1);  //highlight 3.3V selection
-
-  while((pressed_buttons & enter) == 0){
-    if(pressed_buttons & scroll_up){
-	    pressed_buttons &= ~scroll_up;
-      change_logic_level();
-    }
-    else if(pressed_buttons & scroll_down){
-	    pressed_buttons &= ~scroll_down;
-      change_logic_level();
-    }
-  }
-  //End of Start Menu
-  
-  //update the I2C pot to correct reference voltage
-  if(logic_level){
-    set_pot(0x40);
-  }else{
-    set_pot(0x33);
-  }
-  
-  //write out message to display during capturing
-  clear_display();
-  write_string(4, 1, "Device is capturing data...");
-  write_string(6, 1, "Press cancel to stop capturing");
-  write_string(7, 1, "data and analyze captured data.");
-  write_string(9, 1, "Device will stop automatically");
-  write_string(10, 1, "when 256 single byte transactions");
-  write_string(11, 1, "are captured.");
-  
-  //Initialization for capture code
-  init_capture();
-
-  //Disable normal button checking
-  disable_normal_buttons();
-  
-  //Begin capture code
-  capture_data_end = data_capture(capture_data_start);
-
-  //Re-enable normal button checking
-  enable_normal_buttons();
-  
-  //TEST CODE:
-  capture_data[0] = 0x01;
-  capture_data[1] = 0xF1;
-  capture_data[2] = 0x13;
-  capture_data[3] = 0xFF;
-  capture_data[4] = 0x22;
-  //TEST CODE:
-  
-  //Analyze and display
-  display_analyze(0/*,end value of data*/);
-  
-  //TEST CODE:
-  char h1[3];
-  char h2[3];
-  sprintf(h1, "%i", capture_data[0]);
-  sprintf(h2, "%i", capture_data[1]);
-  
-  write_string(13, 1, h1);
-  write_string(14, 1, h2);
-  
-  PORTA.DIR = 0xFC;
-  PORTA.OUT = 0x00;
   while(1){
-    char string[3];
-	sprintf(string, "%i", PORTA.IN);
-    write_string(2, 1, string);
-    _delay_ms(250);
+    //Start Menu code
+    clear_display();
+    write_string(4, 1, "Select Logic Level and Press Enter to");
+    write_string(5, 1, "Start Capturing Data:");
+    write_string(7, 5, "3.3 Volt Logic");
+    write_string(9, 5, "5   Volt Logic" );
+    invert_string(7, 4, 15, 1);  //highlight 3.3V selection
+
+    while((pressed_buttons & enter) == 0){
+      if(pressed_buttons & scroll_up){
+	      pressed_buttons &= ~scroll_up;
+        change_logic_level();
+      }
+      else if(pressed_buttons & scroll_down){
+	      pressed_buttons &= ~scroll_down;
+        change_logic_level();
+      }
+    }
+    pressed_buttons &= ~enter;
+    //End of Start Menu
+    
+    //update the I2C pot to correct reference voltage
+    if(logic_level){
+      set_pot(0x40);
+    }else{
+      set_pot(0x33);
+    }
+    
+    //write out message to display during capturing
+    clear_display();
+    write_string(4, 1, "Device is capturing data...");
+    write_string(6, 1, "Press cancel to stop capturing");
+    write_string(7, 1, "data and analyze captured data.");
+    write_string(9, 1, "Device will stop automatically");
+    write_string(10, 1, "when 256 single byte transactions");
+    write_string(11, 1, "are captured.");
+    
+    //Initialization for capture code
+    init_capture();
+
+    //Disable normal button checking
+    disable_normal_buttons();
+    pressed_buttons |= cancel;
+    
+    //Begin capture code
+    capture_data_end = data_capture(capture_data_start);
+
+    //Re-enable normal button checking
+    enable_normal_buttons();
+    while(pressed_buttons & cancel){
+      pressed_buttons &= ~cancel;
+      _delay_ms(1);
+    }
+#if 0    
+    //TEST CODE:
+    capture_data[0] = 0x01;
+    capture_data[1] = 0xF1;
+    capture_data[2] = 0x13;
+    capture_data[3] = 0xFF;
+    capture_data[4] = 0x22;
+    //TEST CODE:
+    
+    //Analyze and display
+    display_analyze(0/*,end value of data*/);
+#endif    
+    //TEST CODE:
+    char h1[10];
+    char h2[10];
+    sprintf(h1, "%i", capture_data[0]);
+    sprintf(h2, "%i", capture_data[1]);
+    
+    write_string(13, 1, h1);
+    write_string(14, 1, h2);
+#if 0
+    PORTA.DIR = 0xFC;
+    PORTA.OUT = 0x00;
+    while(1){
+      char string[3];
+	  sprintf(string, "%i", PORTA.IN);
+      write_string(2, 1, string);
+      _delay_ms(250);
+    }
+#endif   
+
+    while((pressed_buttons & cancel) == 0){
+      //Add scrolling code
+    }
+    pressed_buttons &= ~cancel;
   }
-  
-  //TEST CODE:
-  
-  while(1){};
   return 0;
 }
