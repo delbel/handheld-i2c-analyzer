@@ -236,10 +236,10 @@ int main(void)
     capture_data[3] = 0xFF;
     capture_data[4] = 0x22;
     //TEST CODE:
-    
+#endif      
     //Analyze and display
     display_analyze(0/*,end value of data*/);
-#endif    
+#if 0  
     //TEST CODE:
     char h1[3];
     char h2[3];
@@ -272,7 +272,7 @@ int main(void)
     write_string(20, 1, h8);
     write_string(21, 1, h9);
     write_string(22, 1, h10);
-
+#endif
 #if 0
     PORTA.DIR = 0xFC;
     PORTA.OUT = 0x00;
