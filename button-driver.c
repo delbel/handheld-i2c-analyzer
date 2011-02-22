@@ -12,7 +12,6 @@
 #define BUTTON_PORT_DIR 	PORTB.DIR
 #define BUTTON_PORT_OUT 	PORTB.OUT
 #define BUTTON_PORT_IN  	PORTB.IN
-#define CANCEL_BUTTON 		(1<<2)
 #define CANCEL_CONTROL_PIN 		PORTB.PIN2CTRL 
 
 #define VERSION "0.0.1"
@@ -43,11 +42,6 @@ ISR(TCC1_OVF_vect)
   }
 }
 
-//ISR(PORTB_INT0_vect)
-//{
-//  //place value to be checked in register
-//}
-
 void init_buttons(void)
 {
   BUTTON_PORT_DIR = 0x00;
@@ -74,12 +68,3 @@ void disable_normal_buttons(void)
   TCC1.INTCTRLA = 0x00; //interrupt off
 }
 
-//void enable_cancel_interrupt(void)
-//{
-//  PORTB.INT0MASK = CANCEL_BUTTON; //enable interrupt
-//}
-
-//void disable_cancel_interrupt(void)
-//{
-//  PORTB.INT0MASK = 0x00; //disable interrupt
-//}
