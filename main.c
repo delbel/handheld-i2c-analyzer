@@ -241,13 +241,16 @@ int main(void)
     display_analyze(0/*,end value of data*/);
 #endif    
     //TEST CODE:
-    char h1[10];
-    char h2[10];
-    sprintf(h1, "%i", capture_data[0]);
-    sprintf(h2, "%i", capture_data[1]);
+    char h1[3];
+    char h2[3];
+    char h3[3];
+    sprintf(h1, "%02x", capture_data[0]);
+    sprintf(h2, "%02x", capture_data[1]);
+    sprintf(h3, "%02x", capture_data[2]);
     
     write_string(13, 1, h1);
     write_string(14, 1, h2);
+    write_string(15, 1, h3);
 #if 0
     PORTA.DIR = 0xFC;
     PORTA.OUT = 0x00;

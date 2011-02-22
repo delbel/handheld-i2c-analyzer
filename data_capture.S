@@ -59,23 +59,23 @@ data_capture:
 idle_start:
   mov r17, r16          ;copy previous value
   in r16,  VPORT0_IN    ;read new value
-  cpi r17, 0b11         ;check if previous value is 0b11 (should be)
+  cpi r17, 0b11
   brne idle_start
 
 idle_start_11:
-  cpi r16, 0b01         ;check if new value is 0b01
+  cpi r16, 0b01
   breq idle_start_11_01
-  cpi r16, 0b11         ;check if new value is 0b11
+  cpi r16, 0b11
   breq idle_start
 
-  ld r19, Z
+  ld r19, Z             ;11 -> 00 or 11 -> 10
   ori r19, ABNORM
   st Z+, r19
   st Z+, r20
   rjmp abnormal
 
-idle_start_11_01:       ;11 -> 01 - Normal start
-  ld r19, Z
+idle_start_11_01:
+  ld r19, Z             ;11 -> 01
   ori r19, START
   st Z+, r19
   mov r18, r20
@@ -85,7 +85,7 @@ idle_start_11_01:       ;11 -> 01 - Normal start
 
 abnormal:
   in r16,  VPORT0_IN    ;read new value
-  cpi r16, 0b11         ;check if new value is 0b11
+  cpi r16, 0b11
   breq idle_start
   rjmp abnormal
 
@@ -94,56 +94,56 @@ abnormal:
 address_rw:
   mov r17, r16          ;copy previous value
   in r16,  VPORT0_IN    ;read new value
-  cpi r17, 0b01         ;check if previous value is 0b01
+  cpi r17, 0b01
   breq address_rw_01
-  cpi r17, 0b10         ;check if previous value is 0b10
+  cpi r17, 0b10
   breq address_rw_10
-  cpi r17, 0b11         ;check if previous value is 0b11
+  cpi r17, 0b11
   breq address_rw_11
 
-  cpi r16, 0b01         ;check if new value is 0b01
+  cpi r16, 0b01
   breq address_rw_00_01
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne address_rw  
+  cpi r16, 0b11
+  brne address_rw       ;00 -> 00 or 00 -> 10
 
-  cpi r18, 7            ;check if i = 7
+  cpi r18, 7
   breq address_rw_00_11_i7
   
-  ld r19, Z
+  ld r19, Z             ;00 -> 11, i=0..6
   lsl r19
   ori r19, 1
   st Z, r19
   inc r18
   rjmp address_rw
 
-address_rw_00_11_i7:    ;00 -> 11, i=7
-  ld r19, Z
+address_rw_00_11_i7:
+  ld r19, Z             ;00 -> 11, i=7
   lsl r19
   ori r19, 1
   st Z+, r19
   rjmp ack_nack
 
-address_rw_00_01:       ;00 -> 01
-  cpi r18, 7            ;check if i = 7
+address_rw_00_01:
+  cpi r18, 7
   breq address_rw_00_01_i7
   
-  ld r19, Z
+  ld r19, Z             ;00 -> 01, i=0..6
   lsl r19
   st Z, r19
   inc r18
   rjmp address_rw
 
-address_rw_00_01_i7:    ;00 -> 01, i=7
-  ld r19, Z
+address_rw_00_01_i7:
+  ld r19, Z             ;00 -> 01, i=7
   lsl r19
   st Z+, r19
   rjmp ack_nack
 
 address_rw_01:
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne address_rw
+  cpi r16, 0b11
+  brne address_rw       ;01 -> 00 or 01 -> 01 or 01 -> 10
 
-  ld r19, Z+
+  ld r19, Z+            ;01 -> 11
   ld r19, Z
   ori r19, ASTOP
   st Z+, r19
@@ -151,15 +151,15 @@ address_rw_01:
   rjmp idle_start
 
 address_rw_10:
-  cpi r16, 0b01         ;check if new value is 0b01
+  cpi r16, 0b01
   breq address_rw_10_01
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne address_rw
+  cpi r16, 0b11
+  brne address_rw       ;10 -> 00 or 10 -> 10
 
-  cpi r18, 7            ;check if i = 7
+  cpi r18, 7
   breq address_rw_00_11_i7
   
-  ld r19, Z
+  ld r19, Z             ;10 -> 11, i=0..6
   lsl r19
   ori r19, 1
   st Z, r19
@@ -167,10 +167,10 @@ address_rw_10:
   rjmp address_rw
 
 address_rw_11:
-  cpi r16, 0b01         ;check if new value is 0b01
-  brne address_rw
+  cpi r16, 0b01
+  brne address_rw       ;11 -> 00 or 11 -> 10 or 11 -> 11
 
-  ld r19, Z+
+  ld r19, Z+            ;11 -> 01
   ld r19, Z
   ori r19, ASTART
   st Z+, r19
@@ -178,25 +178,25 @@ address_rw_11:
   mov r18, r20
   rjmp address_rw
 
-address_rw_10_11_i7:    ;10 -> 11, i=7
-  ld r19, Z
+address_rw_10_11_i7:
+  ld r19, Z             ;10 -> 11, i=7
   lsl r19
   ori r19, 1
   st Z+, r19
   rjmp ack_nack
 
-address_rw_10_01:       ;10 -> 01
-  cpi r18, 7            ;check if i = 7
+address_rw_10_01:
+  cpi r18, 7
   breq address_rw_10_01_i7
   
-  ld r19, Z
+  ld r19, Z             ;10 -> 01, i=0..6
   lsl r19
   st Z, r19
   inc r18
   rjmp address_rw
 
-address_rw_10_01_i7:    ;10 -> 01, i=7
-  ld r19, Z
+address_rw_10_01_i7:
+  ld r19, Z             ;10 -> 01, i=7
   lsl r19
   st Z+, r19
   rjmp ack_nack
@@ -206,61 +206,61 @@ address_rw_10_01_i7:    ;10 -> 01, i=7
 ack_nack:
   mov r17, r16          ;copy previous value
   in r16,  VPORT0_IN    ;read new value
-  cpi r17, 0b01         ;check if previous value is 0b01
+  cpi r17, 0b01
   breq ack_nack_01
-  cpi r17, 0b10         ;check if previous value is 0b10
+  cpi r17, 0b10
   breq ack_nack_10
-  cpi r17, 0b11         ;check if previous value is 0b11
+  cpi r17, 0b11
   breq ack_nack_11  
 
-  cpi r16, 0b01         ;check if new value is 0b01
+  cpi r16, 0b01
   breq ack_nack_00_01
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne ack_nack
+  cpi r16, 0b11
+  brne ack_nack         ;00 -> 00 or 00 -> 10
 
-  ldi r19, (NACK<<4) | DATA
+  ldi r19, (NACK<<4) | DATA  ;00 -> 11
   st Z+, r19
   mov r18, r20
   rjmp data_m
 
-ack_nack_00_01:       ;00 -> 01
-  ldi r19, (ACK<<4) | DATA
+ack_nack_00_01:
+  ldi r19, (ACK<<4) | DATA   ;00 -> 01
   st Z+, r19
   mov r18, r20
   rjmp data_m
 
 ack_nack_01:
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne ack_nack
+  cpi r16, 0b11
+  brne ack_nack         ;01 -> 00 or 01 -> 01 or 01 -> 10
 
-  ld r19, Z
+  ld r19, Z             ;01 -> 11
   ori r19, ASTOP
   st Z+, r19
   st Z+, r20
   rjmp idle_start
 
 ack_nack_10:
-  cpi r16, 0b01         ;check if new value is 0b01
+  cpi r16, 0b01
   breq ack_nack_10_01
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne ack_nack
+  cpi r16, 0b11
+  brne ack_nack         ;10 -> 00 or 10 -> 10
 
-  ldi r19, (NACK<<4) | DATA
+  ldi r19, (NACK<<4) | DATA  ;10 -> 11
   st Z+, r19
   mov r18, r20
   rjmp data_m
 
-ack_nack_10_01:       ;10 -> 01
-  ldi r19, (ACK<<4) | DATA
+ack_nack_10_01:
+  ldi r19, (ACK<<4) | DATA   ;10 -> 01
   st Z+, r19
   mov r18, r20
   rjmp data_m
 
 ack_nack_11:
-  cpi r16, 0b11         ;check if new value is 0b11
-  brne ack_nack
+  cpi r16, 0b01
+  brne ack_nack         ;11 -> 00 or 11 -> 10 or 11 -> 11
 
-  ld r19, Z
+  ld r19, Z             ;11 -> 01
   ori r19, ASTART
   st Z+, r19
   mov r18, r20
