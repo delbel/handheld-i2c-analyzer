@@ -69,7 +69,6 @@ idle_start_11:
   breq idle_start
 
   ld r19, Z
-  andi r19, 0b11110000
   ori r19, ABNORM
   st Z+, r19
   st Z+, r20
@@ -77,7 +76,6 @@ idle_start_11:
 
 idle_start_11_01:       ;11 -> 01 - Normal start
   ld r19, Z
-  andi r19, 0b11110000
   ori r19, START
   st Z+, r19
   mov r18, r20
@@ -147,7 +145,6 @@ address_rw_01:
 
   ld r19, Z+
   ld r19, Z
-  andi r19, 0b11110000
   ori r19, ASTOP
   st Z+, r19
   st Z+, r20
@@ -175,7 +172,6 @@ address_rw_11:
 
   ld r19, Z+
   ld r19, Z
-  andi r19, 0b11110000
   ori r19, ASTART
   st Z+, r19
   st Z+, r20
@@ -238,7 +234,6 @@ ack_nack_01:
   brne ack_nack
 
   ld r19, Z
-  andi r19, 0b11110000
   ori r19, ASTOP
   st Z+, r19
   st Z+, r20
@@ -266,7 +261,6 @@ ack_nack_11:
   brne ack_nack
 
   ld r19, Z
-  andi r19, 0b11110000
   ori r19, ASTART
   st Z+, r19
   mov r18, r20
