@@ -217,7 +217,6 @@ ack_nack:
   cpi r17, 0b11         ;check if previous value is 0b11
   breq ack_nack_11  
 
-ack_nack_00:
   cpi r16, 0b01         ;check if new value is 0b01
   breq ack_nack_00_01
   cpi r16, 0b11         ;check if new value is 0b11
