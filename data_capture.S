@@ -200,8 +200,10 @@ address_rw_10_11_i7:    ;10 -> 11, i=7
 
 address_rw_11:
   cpi r16, 0b01         ;check if new value is 0b01
-  brne branch_helper_01
+  breq address_rw_11_01
+  rjmp address_rw
 
+address_rw_11_01:       ;11 -> 01
   ld r19, Z+
   ld r19, Z
   andi r19, 0b11110000
@@ -209,9 +211,6 @@ address_rw_11:
   st Z+, r19
   st Z+, r20
   ldi r18, 0
-  rjmp address_rw
-
-branch_helper_01:
   rjmp address_rw
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
