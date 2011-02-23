@@ -1,4 +1,4 @@
-PRG            =atmega_main
+PRG            =atmega-main
 
 # Change above name to that of your project with NO extension.
 
