@@ -72,6 +72,10 @@ data_capture:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 idle_start:
+  ld temp, X                           ;check if filling last byte of array
+  cpi temp, 0
+  brne done_helper_1
+
   mov prev, new                        ;copy previous value
   in new, VPORT0_IN                    ;read new value
   cpi prev, 0b11
@@ -86,7 +90,7 @@ idle_start:
   ori temp, ABNORM
   st Z+, temp
   st Z+, zero
-  rjmp abnormal
+  rjmp idle_start
 
 idle_start_11_01:
   ld temp, Z                           ;11 -> 01
@@ -94,18 +98,6 @@ idle_start_11_01:
   st Z+, temp
   mov i, zero
   rjmp address_rw
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-abnormal:
-  ld temp, X                           ;check if filling last byte of array
-  cpi temp, 0
-  brne done_helper_1
-
-  in new, VPORT0_IN                    ;read new value
-  cpi new, 0b11
-  breq idle_start                      ;XX -> 11
-  rjmp abnormal
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
