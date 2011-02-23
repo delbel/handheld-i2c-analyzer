@@ -44,7 +44,7 @@
 
 #define VERSION "0.0.1"
 
-#define CAPTURE_DATA_BYTES 1024
+#define CAPTURE_DATA_BYTES 2560
 #define MAX_LINE 24
 
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
@@ -134,7 +134,8 @@ void display_analyze(int startByte/*, int endByte*/)
 	else if(condition == DATA){
 	  i++;
 	  char string2[40];
-	  sprintf(string2, "DATA: %X + %s", capture_data[i], (((capture_data[i+1] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
+	  sprintf(string2, "DATA: %02x + %s", capture_data[i],
+      (((capture_data[i+1] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
 	  write_string(line, 1, string2);
 	  i++;
 	  line++;
@@ -143,7 +144,9 @@ void display_analyze(int startByte/*, int endByte*/)
 	line++;
 	i++;
 	char string[40];
-	sprintf(string, "ADDR: %X + %s + %s", (capture_data[i] >> 1), ((capture_data[i] & 0x01) == 0x01)?"READ":"WRITE", (((capture_data[i+1] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
+	sprintf(string, "ADDR: %02x + %s + %s", (capture_data[i] >> 1),
+    ((capture_data[i] & 0x01) == 0x01)?"READ":"WRITE",
+    (((capture_data[i+1] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
 	write_string(line, 1, string);
 	i++;
 	line++;

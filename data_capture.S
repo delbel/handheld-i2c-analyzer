@@ -18,6 +18,9 @@
 .equ ACK, 1
 .equ NACK, 2
 
+;subtract two to prevent indexing out of bounds
+.equ ARRAY_SIZE, 2560-2
+
 ;r16 - new value
 ;r17 - previous value
 ;r18 - i
@@ -36,7 +39,7 @@ data_capture:
   push r30
   push r31
 
-  ;set up the pointer to the array
+  ;set up the pointer to the array (Z)
   mov r30, r24
   mov r31, r25
 
@@ -53,6 +56,14 @@ data_capture:
   ldi r26, lo8(PORTB_INT0MASK)
   ldi r27, hi8(PORTB_INT0MASK)
   st X, r19
+
+  ;point to end of array (X)
+  mov r26, r24
+  mov r27, r25
+  ldi r19, lo8(ARRAY_SIZE)
+  add r26, r19
+  ldi r19, hi8(ARRAY_SIZE)
+  adc r27, r19
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -90,7 +101,16 @@ abnormal:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+done_helper_1:
+  rjmp done
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 address_rw:
+  ld r19, X                            ;check if filling last byte of array
+  cpi r19, 0
+  brne done_helper_1
+
   mov r17, r16                         ;copy previous value
   in r16,  VPORT0_IN                   ;read new value
   cpi r17, 0b01
@@ -267,7 +287,16 @@ ack_nack_11:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+done_helper_2:
+  rjmp done
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 data_m:
+  ld r19, X                            ;check if filling last byte of array
+  cpi r19, 0
+  brne done_helper_2
+
   mov r17, r16                         ;copy previous value
   in r16,  VPORT0_IN                   ;read new value
   cpi r17, 0b01
@@ -404,6 +433,8 @@ data_m_11_01_i1:
 
 done:
   ;disable cancel button
+  ldi r26, lo8(PORTB_INT0MASK)
+  ldi r27, hi8(PORTB_INT0MASK)
   st X, r20
 
   ;return end of data array
