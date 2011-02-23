@@ -94,6 +94,10 @@ idle_start_11_01:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 abnormal:
+  ld r19, X                            ;check if filling last byte of array
+  cpi r19, 0
+  brne done_helper_1
+
   in r16,  VPORT0_IN                   ;read new value
   cpi r16, 0b11
   breq idle_start                      ;XX -> 11
