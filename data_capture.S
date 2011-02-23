@@ -73,7 +73,7 @@ data_capture:
 
 idle_start:
   mov prev, new                        ;copy previous value
-  in new,  VPORT0_IN                   ;read new value
+  in new, VPORT0_IN                    ;read new value
   cpi prev, 0b11
   brne idle_start                      ;00 -> XX or 01 -> XX or 10 -> XX
 
@@ -102,7 +102,7 @@ abnormal:
   cpi temp, 0
   brne done_helper_1
 
-  in new,  VPORT0_IN                   ;read new value
+  in new, VPORT0_IN                    ;read new value
   cpi new, 0b11
   breq idle_start                      ;XX -> 11
   rjmp abnormal
@@ -120,7 +120,7 @@ address_rw:
   brne done_helper_1
 
   mov prev, new                        ;copy previous value
-  in new,  VPORT0_IN                   ;read new value
+  in new, VPORT0_IN                    ;read new value
   cpi prev, 0b01
   breq address_rw_01
   cpi prev, 0b10
@@ -232,7 +232,7 @@ address_rw_10_01_i7:
 
 ack_nack:
   mov prev, new                        ;copy previous value
-  in new,  VPORT0_IN                   ;read new value
+  in new, VPORT0_IN                    ;read new value
   cpi prev, 0b01
   breq ack_nack_01
   cpi prev, 0b10
@@ -306,7 +306,7 @@ data_m:
   brne done_helper_2
 
   mov prev, new                        ;copy previous value
-  in new,  VPORT0_IN                   ;read new value
+  in new, VPORT0_IN                    ;read new value
   cpi prev, 0b01
   breq data_m_01
   cpi prev, 0b10
