@@ -60,9 +60,8 @@ idle_start:
   mov r17, r16                         ;copy previous value
   in r16,  VPORT0_IN                   ;read new value
   cpi r17, 0b11
-  brne idle_start
+  brne idle_start                      ;00 -> XX or 01 -> XX or 10 -> XX
 
-idle_start_11:
   cpi r16, 0b01
   breq idle_start_11_01
   cpi r16, 0b11
@@ -330,12 +329,6 @@ data_m_01:
   st Z+, r20
   rjmp idle_start
 
-data_m_01_11_i1:
-  ld r19, -Z                           ;01 -> 11, i=1
-  andi r19, 0b11110000
-  st Z, r19
-  rjmp stop_m
-
 data_m_11:
   cpi r16, 0b01
   brne data_m                          ;11 -> 00 or 11 -> 10 or 11 -> 11
@@ -389,21 +382,23 @@ data_m_10_01_i7:
   st Z+, r19
   rjmp ack_nack
 
-data_m_11_01_i1:
-  ld r19, -Z                           ;11 -> 01, i=1
+data_m_01_11_i1:
+  st Z, r20                            ;01 -> 11, i=1
+  ld r19, -Z
   andi r19, 0b11110000
-  st Z, r19
-  rjmp repeated_start
+  ori r19, STOP
+  st Z+, r19
+  st Z+, r20
+  rjmp idle_start
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-stop_m:
-  nop                                  ;TODO
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-repeated_start:
-  nop                                  ;TODO
+data_m_11_01_i1:
+  st Z, r20                            ;11 -> 01, i=1
+  ld r19, -Z
+  andi r19, 0b11110000
+  ori r19, RSTART
+  st Z+, r19
+  mov r18, r20
+  rjmp address_rw
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
