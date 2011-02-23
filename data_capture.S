@@ -13,7 +13,7 @@
 #define Zl r30
 #define Zh r31
 
-;cancel button is port A, pin 2
+;cancel button is port B, pin 2
 .equ CANCEL_BUTTON, 1<<2
 
 .equ START, 1
