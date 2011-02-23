@@ -40,7 +40,7 @@ data_capture:
   mov r30, r24
   mov r31, r25
 
-  ;set up virtual port
+  ;set up port A as virtual port 0
   lds    r16, PORTCFG_VPCTRLA
   andi  r16, ~PORTCFG_VP0MAP_gm
   sts    PORTCFG_VPCTRLA, r16
@@ -269,7 +269,131 @@ ack_nack_11:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 data_m:
-  nop                                  ;TODO
+  mov r17, r16                         ;copy previous value
+  in r16,  VPORT0_IN                   ;read new value
+  cpi r17, 0b01
+  breq data_m_01
+  cpi r17, 0b10
+  breq data_m_10
+  cpi r17, 0b11
+  breq data_m_11
+
+  cpi r16, 0b01
+  breq data_m_00_01
+  cpi r16, 0b11
+  brne data_m                          ;00 -> 00 or 00 -> 10
+
+  cpi r18, 7
+  breq data_m_00_11_i7
+
+  ld r19, Z                            ;00 -> 11, i=0..6
+  lsl r19
+  ori r19, 1
+  st Z, r19
+  inc r18
+  rjmp data_m
+
+data_m_00_11_i7:
+  ld r19, Z                            ;00 -> 11, i=7
+  lsl r19
+  ori r19, 1
+  st Z+, r19
+  rjmp ack_nack
+
+data_m_00_01:
+  cpi r18, 7
+  breq data_m_00_01_i7
+
+  ld r19, Z                            ;00 -> 01, i=0..6
+  lsl r19
+  st Z, r19
+  inc r18
+  rjmp data_m
+
+data_m_00_01_i7:
+  ld r19, Z                            ;00 -> 01, i=7
+  lsl r19
+  st Z+, r19
+  rjmp ack_nack
+
+data_m_01:
+  cpi r16, 0b11
+  brne data_m                          ;01 -> 00 or 01 -> 01 or 01 -> 10
+
+  cpi r18, 1
+  breq data_m_01_11_i1
+
+  ld r19, Z+                           ;01 -> 11, i=0, i=2..7
+  ld r19, Z
+  ori r19, ASTOP
+  st Z+, r19
+  st Z+, r20
+  rjmp idle_start
+
+data_m_01_11_i1:
+  ld r19, -Z                           ;01 -> 11, i=1
+  andi r19, 0b11110000
+  st Z, r19
+  rjmp stop_m
+
+data_m_11:
+  cpi r16, 0b01
+  brne data_m                          ;11 -> 00 or 11 -> 10 or 11 -> 11
+
+  cpi r18, 1
+  breq data_m_11_01_i1
+
+  ld r19, Z+                           ;11 -> 01, i=0, i=2..7
+  ld r19, Z
+  ori r19, ASTART
+  st Z+, r19
+  mov r18, r20
+  rjmp idle_start
+
+data_m_10:
+  cpi r16, 0b01
+  breq data_m_10_01
+  cpi r16, 0b11
+  brne data_m                          ;10 -> 00 or 10 -> 10
+
+  cpi r18, 7
+  breq data_m_10_11_i7
+
+  ld r19, Z                            ;10 -> 11, i=0..6
+  lsl r19
+  ori r19, 1
+  st Z, r19
+  inc r18
+  rjmp data_m
+
+data_m_10_11_i7:
+  ld r19, Z                            ;10 -> 11, i=7
+  lsl r19
+  ori r19, 1
+  st Z+, r19
+  rjmp ack_nack
+
+data_m_10_01:
+  cpi r18, 7
+  breq data_m_10_01_i7
+
+  ld r19, Z                            ;10 -> 01, i=0..6
+  lsl r19
+  st Z, r19
+  inc r18
+  rjmp data_m
+
+data_m_10_01_i7:
+  ld r19, Z                            ;10 -> 01, i=7
+  lsl r19
+  st Z+, r19
+  rjmp ack_nack
+
+data_m_11_01_i1:
+  ld r19, -Z                           ;11 -> 01, i=1
+  andi r19, 0b11110000
+  st Z, r19
+  rjmp repeated_start
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
