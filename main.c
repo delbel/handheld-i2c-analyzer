@@ -142,6 +142,10 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
       line++;
       continue;
     }
+    else if(condition == 0){
+      i += 2;
+      continue;
+    }
     sprintf(string, "ADDR: %02X + %s + %s", (capture_data[i+1] >> 1),
       ((capture_data[i+1] & 0x01) == 0x01)?"READ":"WRITE",
       (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
@@ -244,45 +248,49 @@ int main(void)
     scroll_up_last = 0;
     scroll_down_last = 0;
     while((pressed_buttons & cancel) == 0){
-      //Check scrolling buttons
-      if(pressed_buttons & scroll_up){
-        pressed_buttons &= ~scroll_up;
-        clear_button_states();
-        analyze_start -= (held_count > MAX_LINE) ? MAX_LINE : 2;
-        if(analyze_start >= UINT16_MAX - MAX_LINE)
-          analyze_start = 0;
-        if(scroll_up_last && held_count <= MAX_LINE){
-          held_count++;
-        } else if(!scroll_up_last){
-          held_count = 1;
-          scroll_up_last = 1;
+      if(capture_data[0]){
+        //Check scrolling buttons
+        if(pressed_buttons & scroll_up){
+          pressed_buttons &= ~scroll_up;
+          clear_button_states();
+          analyze_start -= (held_count > MAX_LINE) ? MAX_LINE : 2;
+          if(analyze_start >= UINT16_MAX - MAX_LINE)
+            analyze_start = 0;
+          if(scroll_up_last && held_count <= MAX_LINE){
+            held_count++;
+          } else if(!scroll_up_last){
+            held_count = 1;
+            scroll_up_last = 1;
+          }
+          scroll_down_last = 0;
         }
-        scroll_down_last = 0;
-      }
-      else if(pressed_buttons & scroll_down){
-        pressed_buttons &= ~scroll_down;
-        clear_button_states();
-        analyze_start += (held_count > MAX_LINE) ? MAX_LINE : 2;
-        if(analyze_start > capture_data_end - capture_data_start - 2)
-          analyze_start = capture_data_end - capture_data_start - 2;
-        if(scroll_down_last && held_count <= MAX_LINE){
-          held_count++;
-        } else if(!scroll_down_last){
-          held_count = 1;
-          scroll_down_last = 1;
+        else if(pressed_buttons & scroll_down){
+          pressed_buttons &= ~scroll_down;
+          clear_button_states();
+          analyze_start += (held_count > MAX_LINE) ? MAX_LINE : 2;
+          if(analyze_start > capture_data_end - capture_data_start - 2)
+            analyze_start = capture_data_end - capture_data_start - 2;
+          if(scroll_down_last && held_count <= MAX_LINE){
+            held_count++;
+          } else if(!scroll_down_last){
+            held_count = 1;
+            scroll_down_last = 1;
+          }
+          scroll_up_last = 0;
+        } else {
+          held_count = 0;
+          scroll_up_last = 0;
+          scroll_down_last = 0;
         }
-        scroll_up_last = 0;
-      } else {
-        held_count = 0;
-        scroll_up_last = 0;
-        scroll_down_last = 0;
+        if(held_count > MAX_LINE) held_count = MAX_LINE + 1;
+
+        //Analyze and display
+        display_analyze(analyze_start, capture_data_end - capture_data_start);
+
+        _delay_ms(held_count > MAX_LINE ? 250 : 50);
       }
-      if(held_count > MAX_LINE) held_count = MAX_LINE + 1;
-
-      //Analyze and display
-      display_analyze(analyze_start, capture_data_end - capture_data_start);
-
-      _delay_ms(held_count > MAX_LINE ? 250 : 50);
+      else
+        write_string(MAX_LINE/2, 8, "No bus activity detected");
     }
     pressed_buttons &= ~cancel;
   }
