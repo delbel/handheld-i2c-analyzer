@@ -75,10 +75,6 @@ data_capture:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 idle_start:
-  ld temp, X                           ;check if filling last byte of array
-  cpi temp, 0
-  brne done_helper_1
-
   mov prev, new                        ;copy previous value
   in new, VPORT0_IN                    ;read new value
   cpi prev, 0b11
