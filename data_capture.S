@@ -6,8 +6,9 @@
 #define new r16
 #define prev r17
 #define i r18
-#define temp r19
-#define zero r20
+#define j r19
+#define temp r20
+#define zero r21
 #define Xl r26
 #define Xh r27
 #define Zl r30
@@ -36,6 +37,7 @@ data_capture:
   push new
   push prev
   push i
+  push j
   push temp
   push zero
   push Xl
@@ -52,8 +54,9 @@ data_capture:
   andi temp, ~PORTCFG_VP0MAP_gm
   sts PORTCFG_VPCTRLA, temp
 
-  ;set up 0 register
+  ;set up 0 register and initialize j
   ldi zero, 0
+  mov j, zero
 
   ;enable cancel interrupt
   ldi temp, CANCEL_BUTTON
@@ -86,10 +89,13 @@ idle_start:
   cpi new, 0b11
   breq idle_start
 
-  ld temp, Z                           ;11 -> 00 or 11 -> 10
+  cpi j, 0                             ;11 -> 00 or 11 -> 10
+  brne idle_start                      ;don't write abnormal marker twice
+  ld temp, Z
   ori temp, ABNORM
   st Z+, temp
   st Z+, zero
+  ldi j, 1
   rjmp idle_start
 
 idle_start_11_01:
@@ -97,6 +103,7 @@ idle_start_11_01:
   ori temp, START
   st Z+, temp
   mov i, zero
+  mov j, zero
   rjmp address_rw
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -448,6 +455,7 @@ done:
   pop Xl
   pop zero
   pop temp
+  pop j
   pop i
   pop prev
   pop new
