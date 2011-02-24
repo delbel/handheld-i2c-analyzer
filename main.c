@@ -45,7 +45,7 @@
 #define VERSION "0.0.1"
 
 #define CAPTURE_DATA_BYTES 2560
-#define MAX_LINE 24
+#define MAX_LINE 28
 
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
 
@@ -154,6 +154,9 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
 int main(void)
 {
   uint16_t analyze_start;
+  uint8_t held_count;
+  uint8_t scroll_up_last;
+  uint8_t scroll_down_last;
 
   // Prevent the FTDI pins from screwing things up
   PORTF.DIR |= 0b1111<<2;
@@ -224,8 +227,8 @@ int main(void)
     
     //Begin capture code
     capture_data_end = data_capture(capture_data_start);
-    if (capture_data_end > capture_data_start + CAPTURE_DATA_BYTES)
-      capture_data_end = capture_data_start + CAPTURE_DATA_BYTES;
+    if (capture_data_end > capture_data_start + CAPTURE_DATA_BYTES - 2)
+      capture_data_end = capture_data_start + CAPTURE_DATA_BYTES - 2;
 
     //Re-enable normal button checking
     enable_normal_buttons();
@@ -236,26 +239,50 @@ int main(void)
 
     clear_display();
 
-    analyze_start = 0;    
+    analyze_start = 0;
+    held_count = 0;
+    scroll_up_last = 0;
+    scroll_down_last = 0;
     while((pressed_buttons & cancel) == 0){
       //Check scrolling buttons
       if(pressed_buttons & scroll_up){
         pressed_buttons &= ~scroll_up;
         clear_button_states();
-        if(analyze_start)
-          analyze_start -= 2;
+        analyze_start -= (held_count > MAX_LINE) ? MAX_LINE : 2;
+        if(analyze_start >= UINT16_MAX - MAX_LINE)
+          analyze_start = 0;
+        if(scroll_up_last && held_count <= MAX_LINE){
+          held_count++;
+        } else if(!scroll_up_last){
+          held_count = 1;
+          scroll_up_last = 1;
+        }
+        scroll_down_last = 0;
       }
       else if(pressed_buttons & scroll_down){
         pressed_buttons &= ~scroll_down;
         clear_button_states();
-        if(analyze_start < capture_data_end - capture_data_start)
-          analyze_start += 2;
+        analyze_start += (held_count > MAX_LINE) ? MAX_LINE : 2;
+        if(analyze_start > capture_data_end - capture_data_start - 2)
+          analyze_start = capture_data_end - capture_data_start - 2;
+        if(scroll_down_last && held_count <= MAX_LINE){
+          held_count++;
+        } else if(!scroll_down_last){
+          held_count = 1;
+          scroll_down_last = 1;
+        }
+        scroll_up_last = 0;
+      } else {
+        held_count = 0;
+        scroll_up_last = 0;
+        scroll_down_last = 0;
       }
+      if(held_count > MAX_LINE) held_count = MAX_LINE + 1;
 
       //Analyze and display
       display_analyze(analyze_start, capture_data_end - capture_data_start);
 
-      _delay_ms(50);
+      _delay_ms(held_count > MAX_LINE ? 250 : 50);
     }
     pressed_buttons &= ~cancel;
   }
