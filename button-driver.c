@@ -17,13 +17,13 @@
 #define VERSION "0.0.1"
 
 volatile uint8_t pressed_buttons;
+uint16_t state[4] = {0};
 
 /*
 * Debounces the buttons and returns 1 when a rising edge is caught and debounced, 0 if button is not pressed
 * or is being held down.
 */
 uint8_t chk_buttons(uint8_t button){
-  static uint16_t state[8] = {0};
   state[button] = (state[button] <<1) | (!bit_is_clear(BUTTON_PORT_IN, button)) | 0xE000;
   if(state[button] == 0xF000) return 1;
   return 0;
@@ -66,5 +66,13 @@ void disable_normal_buttons(void)
 {
   //disable overflow vector
   TCC1.INTCTRLA = 0x00; //interrupt off
+}
+
+void clear_button_states(void)
+{
+  state[0] = 0xFF;
+  state[1] = 0xFF;
+  state[2] = 0xFF;
+  state[3] = 0xFF;
 }
 

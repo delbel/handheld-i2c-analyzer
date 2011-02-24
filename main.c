@@ -67,7 +67,7 @@ void init_clock(void)
 
 void change_logic_level(void)
 {
-	logic_level ^= 1;
+  logic_level ^= 1;
   if(logic_level){
     invert_string(9, 4, 15, 1); //highlight 5V selection
     invert_string(7, 4, 15, 0); //unselect 3.3V
@@ -88,73 +88,73 @@ void init_capture(void)
   }
 }
 
-void display_analyze(int startByte/*, int endByte*/)
+void display_analyze(uint16_t startByte, uint16_t endByte)
 {
-  clear_display();
+  char string[40];
   uint8_t line = 1;
-  int i = startByte;
+  uint16_t i = startByte;
   uint8_t condition;
-  while(line <= MAX_LINE /*& if i > endByte*/){
-    if(capture_data[i] == 0x00)
-	{
-	  line++;
-	  i++;
-	  continue;
-	}
-	condition = (capture_data[i] & 0x0F);\
-	
-	if(condition == START){
-	  write_string(line, 1, "START");
-	}
-	else if(condition == STOP){
-	  write_string(line, 1, "STOP");
-	  line++;
-	  i++;
-	  continue;
-	}
-	else if(condition == RSTART){
-	  line++;
-	  write_string(line, 1, "REPEATED START");
-	}
-	else if(condition == ABNORM){
-	  write_string(line, 1, "ABNORMAL TRANSITION");
-	  line++;
-	  i++;
-	  continue;
-	}
-	else if(condition == ASTOP){
-	  write_string(line, 1, "ABNORMAL STOP CONDITION");
-	  line++;
-	  i++;
-	  continue;
-	}
-	else if(condition == ASTART){
-	  write_string(line, 1, "ABNORMAL START CONDITION");
-	}
-	else if(condition == DATA){
-	  i++;
-	  char string2[40];
-	  sprintf(string2, "DATA: %02x + %s", capture_data[i],
-      (((capture_data[i+1] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
-	  write_string(line, 1, string2);
-	  i++;
-	  line++;
-	  continue;
-	}
-	line++;
-	i++;
-	char string[40];
-	sprintf(string, "ADDR: %02x + %s + %s", (capture_data[i] >> 1),
-    ((capture_data[i] & 0x01) == 0x01)?"READ":"WRITE",
-    (((capture_data[i+1] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
-	write_string(line, 1, string);
-	i++;
-	line++;
+  static uint16_t startByteOld = 0;
+
+  if(startByteOld != startByte)
+    clear_display();
+  startByteOld = startByte;
+
+  while((line <= MAX_LINE) && (i < endByte-2)){
+    condition = (capture_data[i] & 0x0F);
+  
+    if(condition == START){
+      write_string(line, 1, "START");
+      line++;
+    }
+    else if(condition == STOP){
+      write_string(line, 1, "STOP");
+      line += 2;
+      i += 2;
+      continue;
+    }
+    else if(condition == RSTART){
+      write_string(line, 1, "REPEATED START");
+      line++;
+    }
+    else if(condition == ABNORM){
+      write_string(line, 1, "ABNORMAL TRANSITION");
+      line += 2;
+      i += 2;
+      continue;
+    }
+    else if(condition == ASTOP){
+      write_string(line, 1, "ABNORMAL STOP CONDITION");
+      line += 2;
+      i += 2;
+      continue;
+    }
+    else if(condition == ASTART){
+      write_string(line, 1, "ABNORMAL START CONDITION");
+      line++;
+    }
+    else if(condition == DATA){
+      char string2[40];
+      sprintf(string2, "DATA: %02X + %s", capture_data[i+1],
+        (((capture_data[i+2] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
+      write_string(line, 1, string2);
+      i += 2;
+      line++;
+      continue;
+    }
+    sprintf(string, "ADDR: %02X + %s + %s", (capture_data[i+1] >> 1),
+      ((capture_data[i+1] & 0x01) == 0x01)?"READ":"WRITE",
+      (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
+    write_string(line, 1, string);
+    i += 2;
+    line++;
   }
 }
 
 int main(void)
 {
+  uint16_t analyze_start;
+
   // Prevent the FTDI pins from screwing things up
   PORTF.DIR |= 0b1111<<2;
   PORTF.OUT |= 0b1111<<2;
@@ -188,11 +188,11 @@ int main(void)
 
     while((pressed_buttons & enter) == 0){
       if(pressed_buttons & scroll_up){
-	      pressed_buttons &= ~scroll_up;
+        pressed_buttons &= ~scroll_up;
         change_logic_level();
       }
       else if(pressed_buttons & scroll_down){
-	      pressed_buttons &= ~scroll_down;
+        pressed_buttons &= ~scroll_down;
         change_logic_level();
       }
     }
@@ -224,6 +224,8 @@ int main(void)
     
     //Begin capture code
     capture_data_end = data_capture(capture_data_start);
+    if (capture_data_end > capture_data_start + CAPTURE_DATA_BYTES)
+      capture_data_end = capture_data_start + CAPTURE_DATA_BYTES;
 
     //Re-enable normal button checking
     enable_normal_buttons();
@@ -231,64 +233,29 @@ int main(void)
       pressed_buttons &= ~cancel;
       _delay_ms(1);
     }
-#if 0    
-    //TEST CODE:
-    capture_data[0] = 0x01;
-    capture_data[1] = 0xF1;
-    capture_data[2] = 0x13;
-    capture_data[3] = 0xFF;
-    capture_data[4] = 0x22;
-    //TEST CODE:
-#endif      
-    //Analyze and display
-    display_analyze(0/*,end value of data*/);
-#if 0  
-    //TEST CODE:
-    char h1[3];
-    char h2[3];
-    char h3[3];
-    char h4[3];
-    char h5[3];
-    char h6[3];
-    char h7[3];
-    char h8[3];
-    char h9[3];
-    char h10[3];
-    sprintf(h1, "%02x", capture_data[0]);
-    sprintf(h2, "%02x", capture_data[1]);
-    sprintf(h3, "%02x", capture_data[2]);
-    sprintf(h4, "%02x", capture_data[3]);
-    sprintf(h5, "%02x", capture_data[4]);
-    sprintf(h6, "%02x", capture_data[5]);
-    sprintf(h7, "%02x", capture_data[6]);
-    sprintf(h8, "%02x", capture_data[7]);
-    sprintf(h9, "%02x", capture_data[8]);
-    sprintf(h10, "%02x", capture_data[9]);
-    
-    write_string(13, 1, h1);
-    write_string(14, 1, h2);
-    write_string(15, 1, h3);
-    write_string(16, 1, h4);
-    write_string(17, 1, h5);
-    write_string(18, 1, h6);
-    write_string(19, 1, h7);
-    write_string(20, 1, h8);
-    write_string(21, 1, h9);
-    write_string(22, 1, h10);
-#endif
-#if 0
-    PORTA.DIR = 0xFC;
-    PORTA.OUT = 0x00;
-    while(1){
-      char string[3];
-	  sprintf(string, "%i", PORTA.IN);
-      write_string(2, 1, string);
-      _delay_ms(250);
-    }
-#endif   
 
+    clear_display();
+
+    analyze_start = 0;    
     while((pressed_buttons & cancel) == 0){
-      //Add scrolling code
+      //Check scrolling buttons
+      if(pressed_buttons & scroll_up){
+        pressed_buttons &= ~scroll_up;
+        clear_button_states();
+        if(analyze_start)
+          analyze_start -= 2;
+      }
+      else if(pressed_buttons & scroll_down){
+        pressed_buttons &= ~scroll_down;
+        clear_button_states();
+        if(analyze_start < capture_data_end - capture_data_start)
+          analyze_start += 2;
+      }
+
+      //Analyze and display
+      display_analyze(analyze_start, capture_data_end - capture_data_start);
+
+      _delay_ms(50);
     }
     pressed_buttons &= ~cancel;
   }
