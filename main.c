@@ -251,7 +251,7 @@ int main(void)
         analyze_start -= (held_count > MAX_LINE) ? MAX_LINE : 2;
         if(analyze_start >= UINT16_MAX - MAX_LINE)
           analyze_start = 0;
-        if(scroll_up_last && held_count <= MAX_LINE){
+        if(scroll_up_last && held_count < MAX_LINE){
           held_count++;
         } else if(!scroll_up_last){
           held_count = 1;
@@ -265,7 +265,7 @@ int main(void)
         analyze_start += (held_count > MAX_LINE) ? MAX_LINE : 2;
         if(analyze_start > capture_data_end - capture_data_start - 2)
           analyze_start = capture_data_end - capture_data_start - 2;
-        if(scroll_down_last && held_count <= MAX_LINE){
+        if(scroll_down_last && held_count < MAX_LINE){
           held_count++;
         } else if(!scroll_down_last){
           held_count = 1;
