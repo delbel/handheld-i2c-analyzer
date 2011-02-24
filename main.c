@@ -44,7 +44,7 @@
 
 #define VERSION "0.0.1"
 
-#define CAPTURE_DATA_BYTES 2560
+#define CAPTURE_DATA_BYTES 1536
 #define MAX_LINE 28
 
 volatile uint8_t logic_level = 0; //0 equals 3.3V, 1 equals 5V
@@ -212,11 +212,11 @@ int main(void)
     //write out message to display during capturing
     clear_display();
     write_string(4, 1, "Device is capturing data...");
-    write_string(6, 1, "Press cancel to stop capturing");
-    write_string(7, 1, "data and analyze captured data.");
-    write_string(9, 1, "Device will stop automatically");
-    write_string(10, 1, "when 256 single byte transactions");
-    write_string(11, 1, "are captured.");
+    write_string(6, 1, "Press cancel to stop capturing data");
+    write_string(7, 1, "and analyze captured data.");
+    write_string(9, 1, "Device will stop automatically when");
+    write_string(10, 1, "the equivalent of 256 single-byte");
+    write_string(11, 1, "transactions are captured.");
     
     //Initialization for capture code
     init_capture();

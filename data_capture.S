@@ -29,7 +29,7 @@
 .equ NACK, 2
 
 ;subtract two to prevent indexing out of bounds
-.equ ARRAY_SIZE, 2560-2
+.equ ARRAY_SIZE, 1536-2
 
 .global data_capture
 data_capture:
