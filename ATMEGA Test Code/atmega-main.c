@@ -57,17 +57,179 @@ void spi_init(void){
   SPSR |= (1<<SPI2X);
 }
 
+//		clock_high, clock_low, data_high, data_low
+void clock_high(void){
+  PORTA |= 0x01;
+  PORTB |= 0x80;
+}
+
+void clock_low(void){
+  PORTA &= 0xFE;
+  PORTB &= 0x7F;
+}
+
+void data_high(void){
+  PORTA |= 0x02;
+  PORTB |= 0x40;
+}
+
+void data_low(void){
+  PORTA &= 0xFD;
+  PORTB &= 0xBF;
+}
+
+//	send_start, send_stop
+void send_start(void){
+  data_low();
+  _delay_ms(50);
+  clock_low();
+}
+
+void send_stop(void){
+  data_low();
+  _delay_ms(50);
+  clock_high();
+  _delay_ms(50);
+  data_high();
+}
+
+void send_bit(uint8_t bit){
+  if(bit == 0){
+    data_low();
+  }
+  else{
+    data_high();
+  }
+  _delay_ms(1);
+  clock_high();
+  _delay_ms(50);
+  clock_low();
+  _delay_ms(50);
+}
+
+void send_byte(uint8_t byte){
+  int i;
+  for(i = 0; i < 8; i++){
+    send_bit((byte & (1<<i)>>i));
+  }
+}
+
+//				send_condition
+//Sends conditions out on the I2C bus to the other mega128 board.
+//Output conditions on PORTA Pin 0 SCL, Pin 1 SDA
+//The following table dictates which condition is sent
+//Number		Condition
+//0				Normal transaction
+//1				Normal transaction with repeated start
+//2				Send transaction and then another without stop condition
+//3				Send data without a start
+//4				Send start in the middle of data byte and send normal transaction
+//5				Send stop in middle of data byte transfer
+//6				Send data and stop without ACK or NACK
+void send_condition(uint8_t condition){
+  if(condition == 7){
+    return;
+  }
+  if(condition == 0){ //Normal Transaction
+    send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b01010101);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b11001100);
+	send_stop();
+  }
+  else if(condition == 1){ //Normal Transaction with repeated start
+    send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b01010101);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b11001100);
+	send_bit(0); //ACK
+	send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b10101010);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b00110011);
+	send_bit(0); //ACK
+	send_stop();
+  }
+  else if(condition == 2){ //Send transaction and another transaction with no stop or repeated start bit
+    send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b01010101);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b11001100);
+	send_bit(0); //ACK
+	//8 bits = 7 address + R/W
+	send_byte(0b10101010);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b00110011);
+	send_bit(0); //ACK
+  }
+  else if(condition == 3){ //Send data without a start
+    //8 bits = 7 address + R/W
+	send_byte(0b01010101);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b11001100);
+	send_bit(0); //ACK
+	send_stop();
+  }
+  else if(condition == 4){ //Send start in middle of transaction and then finish transaction
+    send_start();
+	//8 bits = 7 address + R/W
+    send_byte(0b10101010);
+	send_bit(0); //ACK
+	//4 bits = data, then interrupted
+	send_bit(1);
+	send_bit(1);
+	send_bit(1);
+	send_bit(1);
+	send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b01010101);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b11110000);
+	send_bit(0); //ACK
+	send_stop();
+  }
+  else if(condition == 5){ //Stop condition in middle of data byte transfer
+    send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b10101010);
+	send_bit(0); //ACK
+	//4 bits = data, then interrupted
+	send_bit(0);
+	send_bit(0);
+	send_bit(0);
+	send_bit(0);
+	send_stop();
+  }
+  else if(condition == 6){ //Send data and stop without ack or nack
+    send_start();
+	//8 bits = 7 address + R/W
+	send_byte(0b10101010);
+	send_bit(0); //ACK
+	//8 bits = data
+	send_byte(0b00110011);
+	send_stop();
+  }
+}
+
 //				scan_buttons
 //Scans the buttons to see if they have changed state.
 void scan_buttons(void){
   uint8_t i;
   for(i = 0; i<NUM_BUTTONS; i++){
     uint8_t value = chk_buttons(i);
-	if((i == 0) & value){
-	  PORTB |= 0xF0;
-	}
-	else if((i == 1) & value){
-	  PORTB &= 0x0F;
+	if(value == 1){
+	  send_condition(i);
 	}
   }
 }
@@ -80,6 +242,7 @@ int main()
   cursor_home();
   DDRD = 0x00; //input for buttons
   DDRB |= 0xF0; //high LEDs output
+  DDRA = 0x03; //output for SDA and SCL
   sei();
   
   while(1){
