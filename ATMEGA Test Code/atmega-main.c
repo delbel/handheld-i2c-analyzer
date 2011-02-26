@@ -14,6 +14,9 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #include <util/twi.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdio.h>
 #include "lcd.h"
 
 //				chk_buttons
@@ -128,18 +131,43 @@ void send_byte(uint8_t byte){
 //6				Send data and stop without ACK or NACK
 void send_condition(uint8_t condition){
   if(condition == 7){
-    return;
+    uint16_t i;
+	for(i=0; i<=255; i++){
+	  cursor_home();
+	  char string[20];
+	  sprintf(string, "Sending byte:%i   ", i);
+	  string2lcd(string);
+	  home_line2();
+	  string2lcd("                                ");
+	  send_start();
+	  //8 bits = 7 address + R/W
+	  send_byte(0b11000011);
+	  send_bit(0);
+	  //8 bits = data
+	  send_byte(i);
+	  send_bit(0);
+	  send_stop();
+	}
   }
   if(condition == 0){ //Normal Transaction
+    cursor_home();
+    string2lcd("Normal Tran                     ");
+	home_line2();
+	string2lcd("                                ");
     send_start();
 	//8 bits = 7 address + R/W
 	send_byte(0b01010101);
 	send_bit(0); //ACK
 	//8 bits = data
 	send_byte(0b11001100);
+	send_bit(0);
 	send_stop();
   }
   else if(condition == 1){ //Normal Transaction with repeated start
+    cursor_home();
+    string2lcd("Normal Tran w/                  ");
+	home_line2();
+	string2lcd("Repeated Start                  ");
     send_start();
 	//8 bits = 7 address + R/W
 	send_byte(0b01010101);
@@ -157,6 +185,10 @@ void send_condition(uint8_t condition){
 	send_stop();
   }
   else if(condition == 2){ //Send transaction and another transaction with no stop or repeated start bit
+    cursor_home();
+	string2lcd("2 tran w/ no                    ");
+	home_line2();
+	string2lcd("stop or r-start                 ");
     send_start();
 	//8 bits = 7 address + R/W
 	send_byte(0b01010101);
@@ -172,6 +204,10 @@ void send_condition(uint8_t condition){
 	send_bit(0); //ACK
   }
   else if(condition == 3){ //Send data without a start
+    cursor_home();
+	string2lcd("No start                        ");
+	home_line2();
+	string2lcd("                                ");
     //8 bits = 7 address + R/W
 	send_byte(0b01010101);
 	send_bit(0); //ACK
@@ -181,6 +217,10 @@ void send_condition(uint8_t condition){
 	send_stop();
   }
   else if(condition == 4){ //Send start in middle of transaction and then finish transaction
+    cursor_home();
+	string2lcd("Abnormal Start                  ");
+	home_line2();
+	string2lcd("middle of tran                  ");
     send_start();
 	//8 bits = 7 address + R/W
     send_byte(0b10101010);
@@ -200,6 +240,10 @@ void send_condition(uint8_t condition){
 	send_stop();
   }
   else if(condition == 5){ //Stop condition in middle of data byte transfer
+    cursor_home();
+	string2lcd("Stop in middle                  ");
+	home_line2();
+	string2lcd("of tran                         ");
     send_start();
 	//8 bits = 7 address + R/W
 	send_byte(0b10101010);
@@ -212,6 +256,10 @@ void send_condition(uint8_t condition){
 	send_stop();
   }
   else if(condition == 6){ //Send data and stop without ack or nack
+    cursor_home();
+	string2lcd("No ACK or NACK                 ");
+	home_line2();
+	string2lcd("                               ");
     send_start();
 	//8 bits = 7 address + R/W
 	send_byte(0b10101010);

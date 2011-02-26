@@ -22,7 +22,7 @@ void clear_display(void){
 	SPDR = 0x01;    //clear display command
 	while (!(SPSR & 0x80)) {}	// Wait for SPI transfer to complete
 	strobe_lcd();   //strobe the LCD enable pin
-	_delay_ms(2);   //obligatory waiting for slow LCD (1.64mS)
+	_delay_ms(3);   //obligatory waiting for slow LCD (1.64mS)
 }         
 
 void cursor_home(void){
@@ -31,7 +31,7 @@ void cursor_home(void){
 	SPDR = 0x02;   // cursor go home position
 	while (!(SPSR & 0x80)) {}	// Wait for SPI transfer to complete
 	strobe_lcd();
-	_delay_ms(2);   //obligatory waiting for slow LCD (1.64mS)
+	_delay_ms(3);   //obligatory waiting for slow LCD (1.64mS)
 }
 
 void cursor_home_nodelay(void){
@@ -48,7 +48,7 @@ void home_line2(void){
 	SPDR = 0xC0;   // cursor go home on line 2
 	while (!(SPSR & 0x80)) {}	// Wait for SPI transfer to complete
 	strobe_lcd(); 
-	_delay_ms(2);   //obligatory waiting for slow LCD (1.64mS)
+	_delay_ms(3);   //obligatory waiting for slow LCD (1.64mS)
 }                           
 
 void home_line2_nodelay(void){
@@ -67,7 +67,7 @@ void fill_spaces(void){
 	  SPDR = 0x20; 
 	  while (!(SPSR & 0x80)) {}	// Wait for SPI transfer to complete
 	  strobe_lcd();
-	  _delay_us(100);   //obligatory waiting for slow LCD (40uS)
+	  _delay_us(150);   //obligatory waiting for slow LCD (40uS)
 	}
 }  
    
@@ -79,7 +79,7 @@ void char2lcd(char a_char){
 	SPDR = a_char; //send the char to the SPI port
 	while (!(SPSR & 0x80)) {}	// Wait for SPI transfer to complete
 	strobe_lcd();  //toggle the enable bit
-	_delay_us(100);   //obligatory waiting for slow LCD (40uS)
+	_delay_us(150);   //obligatory waiting for slow LCD (40uS)
 }
 
 void char2lcd_nodelay(char a_char){
@@ -101,7 +101,7 @@ void string2lcd(char *lcd_str){
 	  SPDR = lcd_str[count]; 
 	  while (!(SPSR & 0x80)) {}	// Wait for SPI transfer to complete
 	  strobe_lcd();
-	  _delay_us(100);   //obligatory waiting for slow LCD (40uS)
+	  _delay_us(150);   //obligatory waiting for slow LCD (40uS)
 	}                  
 } 
 
