@@ -83,6 +83,10 @@ void data_low(void){
 
 //	send_start, send_stop
 void send_start(void){
+  data_high();
+  _delay_ms(1);
+  clock_high();
+  _delay_ms(1);
   data_low();
   _delay_ms(50);
   clock_low();
@@ -112,8 +116,8 @@ void send_bit(uint8_t bit){
 
 void send_byte(uint8_t byte){
   int i;
-  for(i = 0; i < 8; i++){
-    send_bit((byte & (1<<i)>>i));
+  for(i = 7; i >= 0; i--){
+    send_bit((byte & (1<<i))>>i);
   }
 }
 
@@ -144,12 +148,12 @@ void send_condition(uint8_t condition){
 	  send_byte(0b11000011);
 	  send_bit(0);
 	  //8 bits = data
-	  send_byte(i);
+	  send_byte((i & 0xFF));
 	  send_bit(0);
 	  send_stop();
 	}
   }
-  if(condition == 0){ //Normal Transaction
+  else if(condition == 0){ //Normal Transaction
     cursor_home();
     string2lcd("Normal Tran                     ");
 	home_line2();
@@ -249,8 +253,8 @@ void send_condition(uint8_t condition){
 	send_byte(0b10101010);
 	send_bit(0); //ACK
 	//4 bits = data, then interrupted
-	send_bit(0);
-	send_bit(0);
+	send_bit(1);
+	send_bit(1);
 	send_bit(0);
 	send_bit(0);
 	send_stop();
