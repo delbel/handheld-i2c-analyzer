@@ -140,7 +140,7 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
           (((capture_data[i+2] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
         write_string(line, 1, string2);
       } else
-        write_string(line, 1, "Incomplete transaction");
+        write_string(line, 1, "INCOMPLETE TRANSACTION");
       i += 2;
       line++;
       continue;
@@ -155,7 +155,7 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
         (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
       write_string(line, 1, string);
     } else
-      write_string(line, 1, "Incomplete transaction");
+      write_string(line, 1, "INCOMPLETE TRANSACTION");
     i += 2;
     line++;
   }
