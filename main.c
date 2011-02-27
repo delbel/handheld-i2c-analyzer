@@ -100,7 +100,7 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
     clear_display();
   startByteOld = startByte;
 
-  while((line <= MAX_LINE) && (i < endByte-2)){
+  while((line <= MAX_LINE) && (i < endByte)){
     condition = (capture_data[i] & 0x0F);
   
     if(condition == START){
