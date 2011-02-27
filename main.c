@@ -239,7 +239,7 @@ int main(void)
     capture_data_end = data_capture(capture_data_start);
     if (capture_data_end > capture_data_start + CAPTURE_DATA_BYTES - 2)
       capture_data_end = capture_data_start + CAPTURE_DATA_BYTES - 2;
-    if (capture_data_end % 2) capture_data_end--;
+    if ((capture_data_end - capture_data_start) % 2) capture_data_end--;
 
     //Re-enable normal button checking
     enable_normal_buttons();
