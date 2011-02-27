@@ -135,9 +135,12 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
     }
     else if(condition == DATA){
       char string2[40];
-      sprintf(string2, "DATA: %02X + %s", capture_data[i+1],
-        (((capture_data[i+2] & 0xF0)>> 4) == ACK)?"ACK":"NACK"); //FIXME
-      write_string(line, 1, string2);
+      if((capture_data[i+2] & 0xF0)>> 4){
+        sprintf(string2, "DATA: %02X + %s", capture_data[i+1],
+          (((capture_data[i+2] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
+        write_string(line, 1, string2);
+      } else
+        write_string(line, 1, "Incomplete transaction");
       i += 2;
       line++;
       continue;
@@ -146,10 +149,13 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
       i += 2;
       continue;
     }
-    sprintf(string, "ADDR: %02X + %s + %s", (capture_data[i+1] >> 1),
-      ((capture_data[i+1] & 0x01) == 0x01)?"READ":"WRITE",
-      (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK"); //FIXME
-    write_string(line, 1, string);
+    if((capture_data[i+2] & 0xF0)>> 4){
+      sprintf(string, "ADDR: %02X + %s + %s", (capture_data[i+1] >> 1),
+        ((capture_data[i+1] & 0x01) == 0x01)?"READ":"WRITE",
+        (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
+      write_string(line, 1, string);
+    } else
+      write_string(line, 1, "Incomplete transaction");
     i += 2;
     line++;
   }
