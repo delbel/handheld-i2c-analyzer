@@ -180,7 +180,6 @@ address_rw_11:
   ld temp, Z
   ori temp, ASTART
   st Z+, temp
-  st Z+, zero
   mov i, zero
   rjmp address_rw
 
@@ -373,7 +372,7 @@ data_m_11:
   ori temp, ASTART
   st Z+, temp
   mov i, zero
-  rjmp idle_start
+  rjmp address_rw
 
 data_m_10:
   cpi new, 0b01

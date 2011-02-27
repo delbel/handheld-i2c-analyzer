@@ -136,7 +136,7 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
     else if(condition == DATA){
       char string2[40];
       sprintf(string2, "DATA: %02X + %s", capture_data[i+1],
-        (((capture_data[i+2] & 0xF0)>> 4) == ACK)?"ACK":"NACK");
+        (((capture_data[i+2] & 0xF0)>> 4) == ACK)?"ACK":"NACK"); //FIXME
       write_string(line, 1, string2);
       i += 2;
       line++;
@@ -148,7 +148,7 @@ void display_analyze(uint16_t startByte, uint16_t endByte)
     }
     sprintf(string, "ADDR: %02X + %s + %s", (capture_data[i+1] >> 1),
       ((capture_data[i+1] & 0x01) == 0x01)?"READ":"WRITE",
-      (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK");
+      (((capture_data[i+2] & 0xF0 )>> 4) == ACK)?"ACK":"NACK"); //FIXME
     write_string(line, 1, string);
     i += 2;
     line++;
