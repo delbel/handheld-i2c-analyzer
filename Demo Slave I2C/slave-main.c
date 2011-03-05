@@ -19,11 +19,11 @@
 //				i2c_init
 //Initializes I2C bus to run at 100kHz and enables the bus
 void i2c_init(void){
-  DDRD |= (1<<PD0) | (1<<PD1);
-  PORTD |= (1<<PD0) | (1<<PD1);
+//  DDRD |= (1<<PD0) | (1<<PD1);
+//  PORTD |= (1<<PD0) | (1<<PD1);
   //TWBR = 0x12;
   TWAR = 0xFE;
-  TWCR = (1<<TWEN) | (1<<TWEA);
+  TWCR = (1<<TWEN);
 }
 
 //				spi_init
@@ -44,14 +44,15 @@ int main(){
   lcd_init();
   i2c_init();
   while(1){
+    TWCR = (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
     while(!(TWCR & (1<<TWINT))){}
-    TWCR |= (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
+    TWCR = (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
     while(!(TWCR & (1<<TWINT))){}
-	uint8_t data = TWDR;
-	TWCR |= (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
+	  uint8_t data = TWDR;
+	  TWCR = (1<<TWINT) | (1<<TWEN);
     char string[20];
-	clear_display();
-	cursor_home();
+	  clear_display();
+	  cursor_home();
     sprintf(string,"Recieved: %X",data);
     string2lcd(string);
   }

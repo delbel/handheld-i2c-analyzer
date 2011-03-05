@@ -35,7 +35,7 @@ all_clean:
 
 program: $(PRG).hex
 	chmod 755 $(PRG).hex
-	sudo avrdude -p m128 -c usbasp -e -U flash:w:$(PRG).hex 
+	avrdude -p m128 -c usbasp -e -U flash:w:$(PRG).hex 
 #	sudo avrdude -p m48 -c usbasp -e -U flash:w:$(PRG).hex 
 
 
