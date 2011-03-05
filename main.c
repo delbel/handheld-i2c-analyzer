@@ -193,6 +193,7 @@ int main(void)
   while(1){
     //Start Menu code
     clear_display();
+    logic_level = 0;
     write_string(4, 1, "Select Logic Level and Press Enter to");
     write_string(5, 1, "Start Capturing Data:");
     write_string(7, 5, "3.3 Volt Logic");
