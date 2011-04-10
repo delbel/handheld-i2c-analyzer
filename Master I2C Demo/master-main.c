@@ -31,7 +31,8 @@
 void i2c_init(void){
   DDRD |= (1<<PD0) | (1<<PD1);
   PORTD |= (1<<PD0) | (1<<PD1);
-  TWBR = 0x72;
+  TWBR = 12;
+//  TWBR = 72;
   TWCR |= (1<<TWEN);
 }
 
@@ -83,7 +84,7 @@ int main(){
 	cursor_home();
 	string2lcd(string);
 	i++;
-	_delay_ms(10000);
+	_delay_ms(100);
   }
   return 0;
 }
