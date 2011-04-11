@@ -1,0 +1,104 @@
+\documentclass{article}
+\usepackage[landscape, margin=0.5in, a3paper]{geometry}
+
+\begin{document}
+  \pagestyle{empty}
+  \begin{center}
+    \textbf{Handheld I$^2$C Bus Analyzer Bill of Materials - \today}
+
+    \vspace{10pt}
+
+    \begin{tabular}{| l | l | l | l | l | l | l | l | l | r | r |}
+      \hline
+      \textbf{Reference}      &  \textbf{Value}  &  \textbf{Package}  &  \textbf{Description}                     &  \textbf{Manufacturer}  &  \textbf{Manufacturer Part \#}  &  \textbf{Supplier}  &  \textbf{Supplier Part \#}   &  \textbf{Qty}  &  \textbf{Unit Cost}  &  \textbf{Total Cost} \\
+      \hline
+      B1                      &                  &                    &  18.5Wh Li-Poly Battery w/ Protection     &  AA Portable Power      &  PL896474-WR                    &  Batteryspace.com   &  4071                        &  1             &  \$22.95             &  \$22.95 \\
+      \hline
+      C1, C2, C6, C9          &  10$\mu$F        &  0805              &  6.3V X5R Ceramic                         &  Taiyo Yuden            &  JMK212BJ106MG-T                &  Digi-Key           &  587-1943-1-ND               &  4             &  \$0.48              &  \$1.92 \\
+      \hline
+      C3                      &  1$\mu$F         &  0402              &  6.3V X5R Ceramic                         &  Taiyo Yuden            &  JMK105BJ105KV-F                &  Digi-Key           &  587-1231-1-ND               &  1             &  \$0.16              &  \$0.16 \\
+      \hline
+      C4                      &  330pF           &  0402              &  50V C0G Ceramic                          &  Taiyo Yuden            &  UMK105CG331JV-F                &  Digi-Key           &  587-1217-1-ND               &  1             &  \$0.14              &  \$0.14 \\
+      \hline
+      C5                      &  22$\mu$F        &  1206              &  6.3V X5R Ceramic                         &  Taiyo Yuden            &  JMK316BJ226KL-T                &  Digi-Key           &  587-1467-1-ND               &  1             &  \$0.56              &  \$0.56 \\
+      \hline
+      C7                      &  33pF            &  0402              &  50V C0G Ceramic                          &  Taiyo Yuden            &  UMK105CG330JV-F                &  Digi-Key           &  587-1205-1-ND               &  1             &  \$0.12              &  \$0.12 \\
+      \hline
+      C8, C10-C20             &  0.1$\mu$F       &  0402              &  10V X5R Ceramic                          &  Taiyo Yuden            &  LMK105BJ104KV-F                &  Digi-Key           &  587-1227-1-ND               &  12            &  \$0.068             &  \$0.82 \\
+      \hline
+      CONN1                   &                  &                    &  22 Position SMT FFC Connector            &  Molex                  &  522712279                      &  Digi-Key           &  WM3380CT-ND                 &  1             &  \$2.00              &  \$2.00 \\
+      \hline
+      CONN2                   &                  &                    &  USB Mini B SMT Connector                 &  Hirose Electric        &  UX60SC-MB-5ST(80)              &  Digi-Key           &  H11671CT-ND                 &  1             &  \$0.76              &  \$0.76 \\
+      \hline
+      CONN3                   &                  &                    &  3x2 Header                               &  FCI                    &  69168-106HLF                   &  Digi-Key           &  609-2423-ND                 &  1             &  \$1.36              &  \$1.36 \\
+      \hline
+      CONN4, CONN5            &                  &                    &  BNC Connector                            &  TE Connectivity        &  5226990-6                      &  Digi-Key           &  A32255-ND                   &  2             &  \$2.63              &  \$5.26 \\
+      \hline
+      D1                      &                  &                    &  Blue LED                                 &  Cree                   &  C4SMF-BJS-CR0U0452             &  Digi-Key           &  C4SMF-BJS-CR0U0452CT-ND     &  1             &  \$0.27              &  \$0.27 \\
+      \hline
+      D2-D5                   &                  &  SOD123            &  Schottky                                 &  Diodes                 &  1N5711W-7-F                    &  Digi-Key           &  1N5711W-FDICT-ND            &  4             &  \$0.48              &  \$1.92 \\
+      \hline
+      L1                      &  3.3$\mu$H       &                    &  SMT Power                                &  TDK                    &  VLCF5020T-3R3N1R6              &  Digi-Key           &  445-3195-1-ND               &  1             &  \$0.81              &  \$0.81 \\
+      \hline
+      L2                      &  10$\mu$H        &                    &  SMT Power                                &  TDK                    &  VLCF4020T-100MR85              &  Digi-Key           &  445-3186-1-ND               &  1             &  \$0.77              &  \$0.77 \\
+      \hline
+      R1                      &  100$\Omega$     &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT100R                 &  Digi-Key           &  RMCF0603JT100RCT-ND         &  1             &  \$0.02              &  \$0.02 \\
+      \hline
+      R2, R5                  &  105k$\Omega$    &  0603              &  1/10W 1\%                                &  Stackpole Electronics  &  RMCF0603FT105K                 &  Digi-Key           &  RMCF0603FT105KCT-ND         &  2             &  \$0.04              &  \$0.08 \\
+      \hline
+      R3                      &  15k$\Omega$     &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT15K0                 &  Digi-Key           &  RMCF0603JT15K0CT-ND         &  1             &  \$0.02              &  \$0.02 \\
+      \hline
+      R4                      &  499k$\Omega$    &  0603              &  1/10W 1\%                                &  Stackpole Electronics  &  RMCF0603FT499K                 &  Digi-Key           &  RMCF0603FT499KCT-ND         &  1             &  \$0.04              &  \$0.04 \\
+      \hline
+      R6                      &  200k$\Omega$    &  0603              &  1/10W 1\%                                &  Stackpole Electronics  &  RMCF0603FT200K                 &  Digi-Key           &  RMCF0603FT200KCT-ND         &  1             &  \$0.04              &  \$0.04 \\
+      \hline
+      R7, R18, R19, R28, R29  &  10k$\Omega$     &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT10K0                 &  Digi-Key           &  RMCF0603JT10K0CT-ND         &  5             &  \$0.02              &  \$0.10 \\
+      \hline
+      R8                      &  1$\Omega$       &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT1R00                 &  Digi-Key           &  RMCF0603JT1R00CT-ND         &  1             &  \$0.02              &  \$0.02 \\
+      \hline
+      R9                      &  10k$\Omega$     &                    &  Trim Potentiometer                       &  Bourns                 &  TC33X-2-103E                   &  Digi-Key           &  TC33X-103ECT-ND             &  1             &  \$0.25              &  \$0.25 \\
+      \hline
+      R13, R14                &  4.7k$\Omega$    &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT4K70                 &  Digi-Key           &  RMCF0603JT4K70CT-ND         &  2             &  \$0.02              &  \$0.04 \\
+      \hline
+      R16, R17                &  1k$\Omega$      &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT1K00                 &  Digi-Key           &  RMCF0603JT1K00CT-ND         &  2             &  \$0.02              &  \$0.04 \\
+      \hline
+      R20                     &  100k$\Omega$    &  SC70-6            &  I$^2$C Potentiometer                     &  Microchip Technology   &  MCP4018T-104E/LT               &  Digi-Key           &  MCP4018T-104E/LTCT-ND       &  1             &  \$0.63              &  \$0.63 \\
+      \hline
+      R21, R23                &  1k$\Omega$      &  0603              &  1/10W 1\%                                &  Stackpole Electronics  &  RMCF0603FT1K00                 &  Digi-Key           &  RMCF0603FT1K00CT-ND         &  2             &  \$0.04              &  \$0.08 \\
+      \hline
+      R24                     &  200k$\Omega$    &  0603              &  1/10W 5\%                                &  Stackpole Electronics  &  RMCF0603JT200K                 &  Digi-Key           &  RMCF0603JT200KCT-ND         &  1             &  \$0.02              &  \$0.02 \\
+      \hline
+      R22, R26                &  110$\Omega$     &  0603              &  1/10W 1\%                                &  Stackpole Electronics  &  RMCF0603FT110R                 &  Digi-Key           &  RMCF0603FT110RCT-ND         &  2             &  \$0.04              &  \$0.08 \\
+      \hline
+      R25, R27                &  1M$\Omega$      &  0603              &  1/10W 1\%                                &  Stackpole Electronics  &  RMCF0603FT1M00                 &  Digi-Key           &  RMCF0603FT1M00CT-ND         &  2             &  \$0.04              &  \$0.08 \\
+      \hline
+      R30, R31                &  100$\Omega$     &  1206              &  1/4W 5\%                                 &  Stackpole Electronics  &  RMCF1206JT100R                 &  Digi-Key           &  RMCF1206JT100RCT-ND         &  2             &  \$0.05              &  \$0.10 \\
+      \hline
+      S1                      &                  &                    &  SPDT Slide Switch                        &  E-Switch               &  EG1224                         &  Digi-Key           &  EG2585-ND                   &  1             &  \$1.11              &  \$1.11 \\
+      \hline
+      S2-S5                   &                  &                    &  SPST Push Button                         &  C\&K Components        &  D6R90 F1 LFS                   &  Digi-Key           &  401-1978-ND                 &  4             &  \$1.30              &  \$5.20 \\
+      \hline
+      U1                      &                  &  DFN8              &  Buck-Boost DC/DC Converter               &  Linear Technology      &  LTC3538EDCB\#TRMPBF            &  Digi-Key           &  LTC3538EDCB\#TRMPBFCT-ND    &  1             &  \$5.82              &  \$5.82 \\
+      \hline
+      U2                      &                  &  SC70-6            &  5V Step-Up DC/DC Converter               &  Linear Technology      &  LTC3525ESC6-5\#TRMPBF          &  Digi-Key           &  LTC3525ESC6-5\#TRMPBFCT-ND  &  1             &  \$4.14              &  \$4.14 \\
+      \hline
+      U3                      &                  &  QFN16             &  USB Power Controller and Li-Ion Charger  &  Linear Technology      &  LTC4055EUF\#PBF                &  Digi-Key           &  LTC4055EUF\#PBF-ND          &  1             &  \$4.38              &  \$4.38 \\
+      \hline
+      U4                      &                  &  TQFP64            &  Microcontroller                          &  Atmel                  &  ATXMEGA128A3-AU                &  Digi-Key           &  ATXMEGA128A3-AU-ND          &  1             &  \$10.43             &  \$10.43 \\
+      \hline
+      U5, U6                  &                  &  SO8               &  High-Speed Comparator                    &  Linear Technology      &  LT1016CS8\#PBF                 &  Digi-Key           &  LT1016CS8\#PBF-ND           &  2             &  \$6.13              &  \$12.26 \\
+      \hline
+      U7                      &                  &  SO8               &  Dual Rail-to-Rail Opamp                  &  Linear Technology      &  LT1801CS8\#PBF                 &  Digi-Key           &  LT1801CS8\#PBF-ND           &  1             &  \$3.88              &  \$3.88 \\
+      \hline
+      U8                      &                  &  TSSOP8            &  I$^2$C Level Translator                  &  NXP Semiconductors     &  PCA9306DP,118                  &  Digi-Key           &  568-4214-1-ND               &  1             &  \$0.93              &  \$0.93 \\
+      \hline
+                              &                  &                    &  2 Inch 22 Position FFC                   &  Molex                  &  21039-0379                     &  Digi-Key           &  WM10008-ND                  &  1             &  \$3.76              &  \$3.76 \\
+      \hline
+                              &                  &                    &  320x240 LCD w/ Backlight and Controller  &  Newhaven Display       &  NHD-320240WX-CoTFH-V\#I041     &  Newhaven Display   &  NHD-320240WX-CoTFH-V\#I041  &  1             &  \$59.95             &  \$59.95 \\
+      \hline
+                              &                  &                    &                                           &                         &                                 &                     &                              &                & \textbf{Total}       &  \textbf{\$153.32} \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{document}
+
