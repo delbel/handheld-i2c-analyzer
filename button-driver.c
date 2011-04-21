@@ -46,10 +46,10 @@ void init_buttons(void)
 {
   BUTTON_PORT_DIR = 0x00;
   CANCEL_CONTROL_PIN = 0x02;
-  PIN0CTRL |= 0b00011000;
-  PIN1CTRL |= 0b00011000;
-  PIN2CTRL |= 0b00011000;
-  PIN3CTRL |= 0b00011000;
+  PORTB.PIN0CTRL |= PORT_OPC_PULLUP_gc;
+  PORTB.PIN1CTRL |= PORT_OPC_PULLUP_gc;
+  PORTB.PIN2CTRL |= PORT_OPC_PULLUP_gc;
+  PORTB.PIN3CTRL |= PORT_OPC_PULLUP_gc;
   //setup timer/counter interrupt for button debouncing
   TCC1.CTRLA = 0x07; //use clk/1024
   //top set to 32
