@@ -276,7 +276,7 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 AVRDUDE_PROGRAMMER = avrisp2
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = com6
+AVRDUDE_PORT = usb
 
 AVRDUDE_WRITE_FLASH = -U -b 57600 flash:w:$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
@@ -446,11 +446,8 @@ gccversion :
 
 # Program the device.  
 program: $(TARGET).hex
-ifeq ($(XMEGA_PORT),)
-	$(AVRDUDE) -p x128a3 -c $(AVRDUDE_PROGRAMMER) -P COM6 -b 57600 -e -U flash:w:$(TARGET).hex
-else
-	$(AVRDUDE) -p x128a3 -c $(AVRDUDE_PROGRAMMER) -P $(XMEGA_PORT) -b 57600 -e -U flash:w:$(TARGET).hex
-endif
+	$(AVRDUDE) -p x128a3 -c $(AVRDUDE_PROGRAMMER) -P $(AVRDUDE_PORT) -e -U flash:w:$(TARGET).hex
+
 
 # Generate avr-gdb config/init file which does the following:
 #     define the reset signal, load the target file, connect to target, and set 
