@@ -259,7 +259,6 @@ int main(void)
       if(capture_data[0]){
         //Check scrolling buttons
         if(pressed_buttons & scroll_up){
-          pressed_buttons &= ~scroll_up;
           clear_button_states();
           analyze_start -= (held_count > MAX_LINE) ? MAX_LINE : 2;
           if(analyze_start >= UINT16_MAX - MAX_LINE)
@@ -273,7 +272,6 @@ int main(void)
           scroll_down_last = 0;
         }
         else if(pressed_buttons & scroll_down){
-          pressed_buttons &= ~scroll_down;
           clear_button_states();
           analyze_start += (held_count > MAX_LINE) ? MAX_LINE : 2;
           if(analyze_start > capture_data_end - capture_data_start - 2)
@@ -300,7 +298,7 @@ int main(void)
       else
         write_string(MAX_LINE/2, 8, "No bus activity detected");
     }
-    pressed_buttons &= ~cancel;
+    clear_button_states();
   }
   return 0;
 }

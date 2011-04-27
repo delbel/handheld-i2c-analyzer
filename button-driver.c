@@ -78,5 +78,6 @@ void clear_button_states(void)
   state[1] = 0xFF;
   state[2] = 0xFF;
   state[3] = 0xFF;
+  pressed_buttons = 0;
 }
 
